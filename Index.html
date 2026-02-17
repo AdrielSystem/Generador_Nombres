@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Generador de Nombre de Equipo</title>
+ 
+<style>
+body {
+  background: #0f172a;
+  font-family: Arial, sans-serif;
+  color: #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+ 
+.card {
+  background: #020617;
+  padding: 25px;
+  border-radius: 14px;
+  width: 440px;
+  box-shadow: 0 0 25px rgba(0,0,0,.6);
+}
+ 
+h1 {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+ 
+small {
+  display: block;
+  text-align: center;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+ 
+label {
+  margin-top: 15px;
+  display: block;
+  font-size: 14px;
+}
+ 
+select, input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+}
+ 
+select, input {
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #334155;
+}
+ 
+button {
+  margin-top: 22px;
+  background: #22c55e;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+ 
+button:hover {
+  background: #16a34a;
+}
+ 
+.result {
+  margin-top: 20px;
+  padding: 12px;
+  background: black;
+  color: #22c55e;
+  font-family: Consolas, monospace;
+  text-align: center;
+  border-radius: 8px;
+  display: none;
+}
+</style>
+</head>
+ 
+<body>
+ 
+<div class="card">
+<h1>Generador de Nombre de Equipo</h1>
+<small>No renombra · No une al dominio</small>
+ 
+  <!-- EMPRESA -->
+<label>Empresa</label>
+<select id="empresa">
+<option value="">Seleccione</option>
+<option value="FLA">1 - GRUPO FLAMINGO (FLA)</option>
+<option value="COL">2 - COLTEFINANCIERA (COL)</option>
+<option value="CON">3 - CONNSER (CON)</option>
+<option value="NOV">4 - NOVAFIANZA (NOV)</option>
+<option value="LNK">5 - LINK SEGUROS (LNK)</option>
+<option value="LAT">6 - LATAM (LAT)</option>
+<option value="FOR">7 - FORJANDO (FOR)</option>
+</select>
+ 
+  <!-- AREA -->
+<label>Área</label>
+<select id="area">
+<option value="">Seleccione</option>
+<option value="PRE">1 - Presidencia (PRE)</option>
+<option value="TI">2 - Tecnología (TI)</option>
+<option value="DES">3 - Desarrollo (DES)</option>
+<option value="INN">4 - Innovación (INN)</option>
+<option value="COM">5 - Comercial (COM)</option>
+<option value="VTA">6 - Ventas (VTA)</option>
+<option value="MER">7 - Mercadeo (MER)</option>
+<option value="SAC">8 - Servicio al Cliente (SAC)</option>
+<option value="OPS">9 - Operaciones (OPS)</option>
+<option value="ADM">10 - Administrativa (ADM)</option>
+<option value="FIN">11 - Financiera (FIN)</option>
+<option value="CTB">12 - Contabilidad (CTB)</option>
+<option value="AUD">13 - Auditoría (AUD)</option>
+<option value="RIE">14 - Riesgos (RIE)</option>
+<option value="CUM">15 - Cumplimiento (CUM)</option>
+<option value="JUR">16 - Jurídica (JUR)</option>
+<option value="PLA">17 - Planeación (PLA)</option>
+<option value="GH">18 - Gestión Humana (GH)</option>
+<option value="CMP">19 - Compras (CMP)</option>
+<option value="LOG">20 - Logística (LOG)</option>
+</select>
+ 
+  <!-- TIPO -->
+<label>Tipo de Equipo</label>
+<select id="tipo">
+<option value="">Seleccione</option>
+<option value="DT">DT - Desktop</option>
+<option value="LP">LP - Laptop</option>
+</select>
+ 
+  <!-- SERIAL -->
+<label>Serial completo</label>
+<input id="serialCompleto" placeholder="Ej: ABCD123456XYZ">
+ 
+  <button onclick="generar()">Generar Nombre</button>
+ 
+  <div class="result" id="resultado"></div>
+</div>
+ 
+<script>
+function generar() {
+  const empresa = document.getElementById("empresa").value;
+  const area = document.getElementById("area").value;
+  const tipo = document.getElementById("tipo").value;
+  const serialCompleto = document.getElementById("serialCompleto").value.trim();
+ 
+  if (!empresa || !area || !tipo || !serialCompleto) {
+    alert("Complete todos los campos");
+    return;
+  }
+ 
+  // Quitar espacios y tomar últimos 4 caracteres
+  const serialLimpio = serialCompleto.replace(/\s+/g, "");
+  const serialFinal = serialLimpio.slice(-4).toUpperCase();
+ 
+  const nombre = `${empresa}-${tipo}-${area}-${serialFinal}`;
+ 
+  const result = document.getElementById("resultado");
+  result.innerText = nombre;
+  result.style.display = "block";
+ 
+  navigator.clipboard.writeText(nombre);
+}
+</script>
+ 
+</body>
+</html>
