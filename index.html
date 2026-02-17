@@ -19,65 +19,54 @@ body {
   background: #020617;
   padding: 25px;
   border-radius: 14px;
-  width: 440px;
+  width: 460px;
   box-shadow: 0 0 25px rgba(0,0,0,.6);
 }
  
 h1 {
   text-align: center;
   font-size: 18px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
  
 small {
   display: block;
   text-align: center;
   color: #94a3b8;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
  
 label {
-  margin-top: 15px;
+  margin-top: 14px;
   display: block;
   font-size: 14px;
 }
  
-select, input, button {
+select, input {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid #334155;
+  background: #020617;
+  color: #e5e7eb;
   font-size: 14px;
 }
  
-select, input {
-  background: #020617;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-}
- 
-button {
+.preview {
   margin-top: 22px;
-  background: #22c55e;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-}
- 
-button:hover {
-  background: #16a34a;
-}
- 
-.result {
-  margin-top: 20px;
-  padding: 12px;
+  padding: 14px;
   background: black;
   color: #22c55e;
   font-family: Consolas, monospace;
   text-align: center;
   border-radius: 8px;
-  display: none;
+  font-size: 16px;
+  min-height: 24px;
+}
+ 
+.preview span {
+  color: #64748b;
 }
 </style>
 </head>
@@ -137,36 +126,51 @@ button:hover {
  
   <!-- SERIAL -->
 <label>Serial completo</label>
-<input id="serialCompleto" placeholder="Ej: ABCD123456XYZ">
+<input id="serial" placeholder="Ej: ABCD123456XYZ">
  
-  <button onclick="generar()">Generar Nombre</button>
- 
-  <div class="result" id="resultado"></div>
+  <!-- PREVIEW -->
+<div class="preview" id="preview">
+<span>El nombre se construirá aquí…</span>
+</div>
 </div>
  
 <script>
-function generar() {
-  const empresa = document.getElementById("empresa").value;
-  const area = document.getElementById("area").value;
-  const tipo = document.getElementById("tipo").value;
-  const serialCompleto = document.getElementById("serialCompleto").value.trim();
+const empresa = document.getElementById("empresa");
+const area = document.getElementById("area");
+const tipo = document.getElementById("tipo");
+const serial = document.getElementById("serial");
+const preview = document.getElementById("preview");
  
-  if (!empresa || !area || !tipo || !serialCompleto) {
-    alert("Complete todos los campos");
+[empresa, area, tipo, serial].forEach(el => {
+  el.addEventListener("input", actualizarNombre);
+  el.addEventListener("change", actualizarNombre);
+});
+ 
+function actualizarNombre() {
+  const e = empresa.value;
+  const a = area.value;
+  const t = tipo.value;
+  const s = serial.value.replace(/\s+/g, "");
+ 
+  let partes = [];
+ 
+  if (e) partes.push(e);
+  if (t) partes.push(t);
+  if (a) partes.push(a);
+  if (s.length >= 1) partes.push(s.slice(-4).toUpperCase());
+ 
+  if (partes.length === 0) {
+    preview.innerHTML = "<span>El nombre se construirá aquí…</span>";
     return;
   }
  
-  // Quitar espacios y tomar últimos 4 caracteres
-  const serialLimpio = serialCompleto.replace(/\s+/g, "");
-  const serialFinal = serialLimpio.slice(-4).toUpperCase();
+  const nombre = partes.join("-");
+  preview.textContent = nombre;
  
-  const nombre = `${empresa}-${tipo}-${area}-${serialFinal}`;
- 
-  const result = document.getElementById("resultado");
-  result.innerText = nombre;
-  result.style.display = "block";
- 
-  navigator.clipboard.writeText(nombre);
+  // Copiar automáticamente solo cuando esté completo
+  if (e && a && t && s.length >= 4) {
+    navigator.clipboard.writeText(nombre);
+  }
 }
 </script>
  
