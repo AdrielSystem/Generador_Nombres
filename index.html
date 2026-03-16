@@ -2,15 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Portal TI - Herramientas</title>
-
-<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+<title>Portal TI</title>
 
 <style>
 
 body{
 background:#0f172a;
-font-family:Arial,sans-serif;
+font-family:Arial;
 color:#e5e7eb;
 display:flex;
 justify-content:center;
@@ -32,13 +30,6 @@ font-size:18px;
 margin-bottom:8px;
 }
 
-small{
-display:block;
-text-align:center;
-color:#94a3b8;
-margin-bottom:20px;
-}
-
 .tabs{
 display:flex;
 gap:8px;
@@ -53,7 +44,6 @@ background:#020617;
 border:1px solid #334155;
 cursor:pointer;
 text-align:center;
-font-size:13px;
 }
 
 .tab.active{
@@ -69,32 +59,24 @@ display:none;
 display:block;
 }
 
-label{
-margin-top:14px;
-display:block;
-font-size:14px;
-}
-
 select,input{
 width:100%;
 padding:10px;
-margin-top:5px;
+margin-top:6px;
 border-radius:8px;
 border:1px solid #334155;
 background:#020617;
-color:#e5e7eb;
-font-size:14px;
+color:white;
 }
 
 .preview{
-margin-top:22px;
+margin-top:20px;
 padding:14px;
 background:black;
 color:#22c55e;
 font-family:Consolas;
 text-align:center;
 border-radius:8px;
-font-size:16px;
 }
 
 button{
@@ -104,66 +86,8 @@ padding:10px;
 border:none;
 border-radius:8px;
 background:#22c55e;
-color:black;
 font-weight:bold;
 cursor:pointer;
-}
-
-button:hover{
-opacity:.85;
-}
-
-.switchBox{
-margin-top:16px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-}
-
-.switch{
-position:relative;
-display:inline-block;
-width:52px;
-height:26px;
-}
-
-.switch input{display:none;}
-
-.slider{
-position:absolute;
-cursor:pointer;
-background-color:#475569;
-border-radius:34px;
-top:0;
-left:0;
-right:0;
-bottom:0;
-transition:.3s;
-}
-
-.slider:before{
-position:absolute;
-content:"";
-height:20px;
-width:20px;
-left:3px;
-bottom:3px;
-background:white;
-border-radius:50%;
-transition:.3s;
-}
-
-input:checked + .slider{
-background-color:#22c55e;
-}
-
-input:checked + .slider:before{
-transform:translateX(26px);
-}
-
-.modeLabel{
-font-size:13px;
-color:#94a3b8;
 }
 
 </style>
@@ -174,13 +98,10 @@ color:#94a3b8;
 <div class="card">
 
 <h1>Portal de Herramientas TI</h1>
-<small>Mesa de Servicios</small>
 
 <div class="tabs">
-
-<div class="tab active" onclick="cambiarTab('generador',this)">Generador</div>
-<div class="tab" onclick="cambiarTab('diagnostico',this)">Diagnóstico</div>
-
+<div class="tab active" onclick="tab('generador',this)">Generador</div>
+<div class="tab" onclick="tab('diagnostico',this)">Diagnóstico</div>
 </div>
 
 <!-- GENERADOR -->
@@ -190,55 +111,31 @@ color:#94a3b8;
 <label>Empresa</label>
 <select id="empresa">
 <option value="">Seleccione</option>
-<option value="FLA">GRUPO FLAMINGO</option>
 <option value="COL">COLTEFINANCIERA</option>
+<option value="FLA">FLAMINGO</option>
 <option value="CON">CONNSER</option>
-<option value="NOV">NOVAFIANZA</option>
-<option value="LNK">LINK SEGUROS</option>
-<option value="LAT">LATAM</option>
-<option value="FOR">FORJANDO</option>
 </select>
 
 <label>Área</label>
 <select id="area">
 <option value="">Seleccione</option>
-<option value="PRE">Presidencia</option>
 <option value="TI">Tecnología</option>
-<option value="DES">Desarrollo</option>
 <option value="COM">Comercial</option>
-<option value="SAC">Servicio al Cliente</option>
 <option value="OPE">Operaciones</option>
-<option value="ADM">Administrativa</option>
-<option value="FIN">Financiera</option>
-<option value="GH">Gestión Humana</option>
-<option value="LOG">Logística</option>
 </select>
 
-<label>Tipo de Equipo</label>
+<label>Tipo</label>
 <select id="tipo">
 <option value="">Seleccione</option>
-<option value="DT">Desktop</option>
 <option value="LP">Laptop</option>
+<option value="DT">Desktop</option>
 </select>
 
-<label>Serial completo</label>
-<input id="serial" placeholder="Ej: ABCD123456XYZ">
-
-<div class="switchBox">
-
-<span class="modeLabel">Primeros 4</span>
-
-<label class="switch">
-<input type="checkbox" id="modoSerial" checked>
-<span class="slider"></span>
-</label>
-
-<span class="modeLabel">Últimos 4</span>
-
-</div>
+<label>Serial</label>
+<input id="serial">
 
 <div class="preview" id="preview">
-El nombre se construirá aquí…
+Nombre aquí
 </div>
 
 </div>
@@ -247,15 +144,15 @@ El nombre se construirá aquí…
 
 <div class="section" id="diagnostico">
 
-<label>Nombre del equipo remoto</label>
-<input id="equipoDiag" placeholder="Ej: PC-123">
+<label>Nombre del equipo</label>
+<input id="equipo">
 
 <button onclick="descargarDiagnostico()">
-Descargar Script Diagnóstico Remoto
+Descargar Diagnóstico Remoto
 </button>
 
 <button onclick="descargarMonitor()">
-Descargar Monitor Safetica DLP
+Descargar Monitor Safetica
 </button>
 
 </div>
@@ -264,154 +161,90 @@ Descargar Monitor Safetica DLP
 
 <script>
 
-function cambiarTab(id,elemento){
+function tab(id,el){
 
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-elemento.classList.add("active");
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
+el.classList.add("active")
 
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+document.getElementById(id).classList.add("active")
 
 }
 
-const empresa=document.getElementById("empresa");
-const area=document.getElementById("area");
-const tipo=document.getElementById("tipo");
-const serial=document.getElementById("serial");
-const modoSerial=document.getElementById("modoSerial");
-const preview=document.getElementById("preview");
-
-[empresa,area,tipo,serial,modoSerial].forEach(el=>{
-el.addEventListener("change",generar);
-el.addEventListener("input",generar);
-});
+const empresa=document.getElementById("empresa")
+const area=document.getElementById("area")
+const tipo=document.getElementById("tipo")
+const serial=document.getElementById("serial")
+const preview=document.getElementById("preview")
 
 function generar(){
 
-let e=empresa.value;
-let a=area.value;
-let t=tipo.value;
-let s=serial.value.replace(/\s/g,"");
-
-let serialFinal="";
+let e=empresa.value
+let a=area.value
+let t=tipo.value
+let s=serial.value
 
 if(s.length>=4){
-
-if(modoSerial.checked){
-serialFinal=s.slice(-4).toUpperCase();
-}else{
-serialFinal=s.slice(0,4).toUpperCase();
+s=s.slice(-4).toUpperCase()
 }
 
-}
+let nombre=[e,t,a,s].filter(Boolean).join("-")
 
-let partes=[];
-
-if(e)partes.push(e);
-if(t)partes.push(t);
-if(a)partes.push(a);
-if(serialFinal)partes.push(serialFinal);
-
-if(partes.length==0){
-preview.innerHTML="El nombre se construirá aquí…";
-return;
-}
-
-preview.textContent=partes.join("-");
+preview.innerText=nombre
 
 }
+
+empresa.onchange=generar
+area.onchange=generar
+tipo.onchange=generar
+serial.oninput=generar
 
 function descargarDiagnostico(){
 
-let equipo=document.getElementById("equipoDiag").value;
+let equipo=document.getElementById("equipo").value
 
-if(equipo==""){
-alert("Ingrese el nombre del equipo");
-return;
+if(!equipo){
+alert("Ingrese nombre del equipo")
+return
 }
 
-let script=\`@echo off
-set EQUIPO=\${equipo}
+let contenido=
+"@echo off\n"+
+"set EQUIPO="+equipo+"\n\n"+
+"echo DIAGNOSTICO REMOTO\n\n"+
+"psexec \\\\"+"%EQUIPO% cmd /c systeminfo\n"+
+"psexec \\\\"+"%EQUIPO% cmd /c tasklist\n"+
+"psexec \\\\"+"%EQUIPO% cmd /c ipconfig /all\n"+
+"pause\n"
 
-echo ============================================
-echo DIAGNOSTICO REMOTO VIA PsExec
-echo ============================================
+let blob=new Blob([contenido],{type:"text/plain"})
+let link=document.createElement("a")
 
-echo Equipo: %EQUIPO%
+link.href=URL.createObjectURL(blob)
+link.download="diagnostico_"+equipo+".bat"
 
-psexec \\\\\\\\%EQUIPO% cmd /c systeminfo
-psexec \\\\\\\\%EQUIPO% cmd /c tasklist
-psexec \\\\\\\\%EQUIPO% cmd /c ipconfig /all
-psexec \\\\\\\\%EQUIPO% cmd /c netstat -ano
-psexec \\\\\\\\%EQUIPO% cmd /c query user
-
-pause
-\`;
-
-let blob=new Blob([script],{type:"text/plain"});
-let link=document.createElement("a");
-
-link.href=URL.createObjectURL(blob);
-link.download="diagnostico_"+equipo+".bat";
-
-link.click();
+link.click()
 
 }
 
 function descargarMonitor(){
 
-let script=\`
+let contenido=
+"$procesos='safetica','safeticaservice'\n"+
+"while($true){\n"+
+"clear\n"+
+"get-process | where {$procesos -contains $_.ProcessName} |\n"+
+"select ProcessName,CPU,Id,@{n='RAM_MB';e={[math]::round($_.WorkingSet64/1MB,2)}}\n"+
+"start-sleep 2\n"+
+"}"
 
-$procesos = "safetica","safeticaservice","safeticaendpoint"
+let blob=new Blob([contenido],{type:"text/plain"})
+let link=document.createElement("a")
 
-$log = "C:\\\\Diag_Remoto\\\\safetica_monitor.csv"
+link.href=URL.createObjectURL(blob)
+link.download="monitor_safetica.ps1"
 
-if(!(Test-Path "C:\\\\Diag_Remoto")){
-New-Item -ItemType Directory -Path "C:\\\\Diag_Remoto"
-}
-
-"Fecha,Proceso,CPU,RAM_MB,Hilos" | Out-File $log
-
-while($true){
-
-Clear-Host
-
-Write-Host "===================================="
-Write-Host " MONITOR SAFETICA DLP TIEMPO REAL"
-Write-Host "===================================="
-
-$fecha = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-
-Get-Process | Where-Object {
-$procesos -contains $_.ProcessName
-} | ForEach-Object {
-
-$ram = [math]::Round($_.WorkingSet64 / 1MB,2)
-
-Write-Host "Proceso :" $_.ProcessName
-Write-Host "PID     :" $_.Id
-Write-Host "CPU     :" $_.CPU
-Write-Host "RAM MB  :" $ram
-Write-Host "Hilos   :" $_.Threads.Count
-Write-Host "----------------------------"
-
-"$fecha,$($_.ProcessName),$($_.CPU),$ram,$($_.Threads.Count)" | Out-File $log -Append
-
-}
-
-Start-Sleep 2
-
-}
-
-\`;
-
-let blob=new Blob([script],{type:"text/plain"});
-let link=document.createElement("a");
-
-link.href=URL.createObjectURL(blob);
-link.download="monitor_safetica.ps1";
-
-link.click();
+link.click()
 
 }
 
