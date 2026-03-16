@@ -204,11 +204,9 @@ Monitor Safetica REMOTO
 function tab(id,el){
 
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
-
 el.classList.add("active")
 
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
-
 document.getElementById(id).classList.add("active")
 
 }
@@ -227,9 +225,7 @@ let a=area.value
 let s=serial.value
 
 if(s.length>=4){
-
 s=s.slice(-4).toUpperCase()
-
 }
 
 let nombre=[e,t,a,s].filter(Boolean).join("-")
@@ -248,30 +244,25 @@ function descargarDiagnostico(){
 let equipo=document.getElementById("equipo").value
 
 if(!equipo){
-
 alert("Ingrese nombre del equipo")
-
 return
-
 }
 
 let contenido=
 
 "@echo off\n"+
 "set PC="+equipo+"\n\n"+
-"echo DIAGNOSTICO REMOTO %PC%\n\n"+
-"psexec \\\\%PC% cmd /c systeminfo\n"+
-"psexec \\\\%PC% cmd /c tasklist\n"+
-"psexec \\\\%PC% cmd /c ipconfig /all\n"+
+"echo ===== DIAGNOSTICO REMOTO =====\n\n"+
+"psexec \\\\%PC% systeminfo\n"+
+"psexec \\\\%PC% tasklist\n"+
+"psexec \\\\%PC% ipconfig /all\n"+
 "pause\n"
 
 let blob=new Blob([contenido],{type:"text/plain"})
 let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
-
 link.download="diagnostico_"+equipo+".bat"
-
 link.click()
 
 }
@@ -304,9 +295,7 @@ let blob=new Blob([contenido],{type:"text/plain"})
 let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
-
 link.download="monitor_safetica_local.ps1"
-
 link.click()
 
 }
@@ -316,46 +305,31 @@ function descargarMonitorRemoto(){
 let equipo=document.getElementById("equipo").value
 
 if(!equipo){
-
 alert("Ingrese nombre del equipo")
-
 return
-
 }
 
 let contenido=
 
-"$pc='"+equipo+"'\n"+
+"@echo off\n"+
+"set PC="+equipo+"\n\n"+
+":loop\n"+
+"cls\n"+
+"echo MONITOR SAFETICA REMOTO %PC%\n\n"+
 "\n"+
-"while($true){\n"+
-"Clear-Host\n"+
-"Write-Host 'MONITOR SAFETICA REMOTO -> '+$pc\n"+
+"psexec \\\\%PC% tasklist | findstr STCService\n"+
+"psexec \\\\%PC% tasklist | findstr STEventService\n"+
+"psexec \\\\%PC% tasklist | findstr STContentService\n"+
+"psexec \\\\%PC% tasklist | findstr STAService\n"+
 "\n"+
-"Invoke-Command -ComputerName $pc -ScriptBlock {\n"+
-"$procesos=@('STCService','STEventService','STContentService','STAService')\n"+
-"\n"+
-"foreach($p in $procesos){\n"+
-"$proc=Get-Process -Name $p -ErrorAction SilentlyContinue\n"+
-"\n"+
-"if($proc){\n"+
-"$ram=[math]::Round($proc.WorkingSet64/1MB,2)\n"+
-"Write-Host $p 'CPU:' $proc.CPU 'RAM:' $ram 'MB'\n"+
-"}else{\n"+
-"Write-Host $p 'NO ACTIVO'\n"+
-"}\n"+
-"}\n"+
-"}\n"+
-"\n"+
-"Start-Sleep 3\n"+
-"}"
+"timeout /t 3 >nul\n"+
+"goto loop\n"
 
 let blob=new Blob([contenido],{type:"text/plain"})
 let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
-
-link.download="monitor_safetica_remoto_"+equipo+".ps1"
-
+link.download="monitor_safetica_remoto_"+equipo+".bat"
 link.click()
 
 }
