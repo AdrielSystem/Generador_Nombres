@@ -109,10 +109,6 @@ font-weight:bold;
 cursor:pointer;
 }
 
-button:hover{
-opacity:.85;
-}
-
 .switchBox{
 margin-top:16px;
 display:flex;
@@ -178,35 +174,14 @@ color:#94a3b8;
 
 <div class="tabs">
 
-<div class="tab active" onclick="cambiarTab('home',this)">Home</div>
-<div class="tab" onclick="cambiarTab('generador',this)">Generador</div>
+<div class="tab active" onclick="cambiarTab('generador',this)">Generador</div>
 <div class="tab" onclick="cambiarTab('diagnostico',this)">Diagnóstico</div>
 
 </div>
 
-
-<!-- HOME -->
-
-<div class="section active" id="home">
-
-<p style="text-align:center;color:#94a3b8;font-size:14px">
-
-Portal interno de utilidades TI.
-
-<br><br>
-
-• Generador de nombres de equipos  
-• Descarga de scripts de diagnóstico  
-• Automatización para mesa de servicios  
-
-</p>
-
-</div>
-
-
 <!-- GENERADOR -->
 
-<div class="section" id="generador">
+<div class="section active" id="generador">
 
 <label>Empresa</label>
 <select id="empresa">
@@ -264,25 +239,20 @@ El nombre se construirá aquí…
 
 </div>
 
-
 <!-- DIAGNOSTICO -->
 
 <div class="section" id="diagnostico">
 
-<p style="font-size:14px;color:#94a3b8">
+<label>Nombre del equipo</label>
+<input id="equipoDiag" placeholder="Ej: PC123">
 
-Descargar script de diagnóstico para el equipo generado.
-
-</p>
-
-<button onclick="descargarScript()">
-Descargar Script de Diagnóstico
+<button onclick="descargarDiagnostico()">
+Descargar Script Diagnóstico
 </button>
 
 </div>
 
 </div>
-
 
 <script>
 
@@ -339,37 +309,48 @@ preview.innerHTML="El nombre se construirá aquí…";
 return;
 }
 
-let nombre=partes.join("-");
-
-preview.textContent=nombre;
+preview.textContent=partes.join("-");
 
 }
 
+function descargarDiagnostico(){
 
-function descargarScript(){
+let equipo=document.getElementById("equipoDiag").value;
 
-let nombre=preview.textContent;
-
-if(nombre.includes("construirá")){
-alert("Primero genere el nombre del equipo");
+if(equipo==""){
+alert("Ingrese el nombre del equipo");
 return;
 }
 
-let script=`
-Write-Host "Diagnóstico del equipo: ${nombre}"
+let script=`@echo off
+set EQUIPO=${equipo}
 
-Write-Host "Nombre actual del equipo:"
-hostname
+echo ============================================
+echo    DIAGNOSTICO REMOTO AVANZADO VIA PsExec
+echo ============================================
+echo.
 
-Write-Host "Información de red:"
-ipconfig
+echo Equipo objetivo: %EQUIPO%
 
-Write-Host "Conectividad:"
-ping google.com
+for /f "tokens=1-4 delims=/ " %%a in ("%date%") do (set DD=%%a& set MM=%%b& set YYYY=%%c)
+for /f "tokens=1-2 delims=: " %%a in ("%time%") do (set HH=%%a& set MN=%%b)
+set HH=%HH: =0%
+set FECHA=%YYYY%%MM%%DD%_%HH%%MN%
 
-Write-Host "Usuarios conectados:"
-query user
+set RUTA_LOCAL=C:\\Diag_Remoto\\resultados\\%EQUIPO%_%FECHA%
+mkdir "%RUTA_LOCAL%"
 
+echo Ejecutando diagnosticos en: %EQUIPO%
+
+psexec \\\\%EQUIPO% cmd /c systeminfo > "%RUTA_LOCAL%\\01_systeminfo.txt"
+psexec \\\\%EQUIPO% cmd /c tasklist > "%RUTA_LOCAL%\\02_tasklist.txt"
+psexec \\\\%EQUIPO% cmd /c ipconfig /all > "%RUTA_LOCAL%\\03_red.txt"
+psexec \\\\%EQUIPO% cmd /c netstat -ano > "%RUTA_LOCAL%\\04_conexiones.txt"
+psexec \\\\%EQUIPO% cmd /c query user > "%RUTA_LOCAL%\\05_usuarios.txt"
+
+echo.
+echo Diagnostico finalizado
+echo Ruta: %RUTA_LOCAL%
 pause
 `;
 
@@ -378,7 +359,7 @@ let blob=new Blob([script],{type:"text/plain"});
 let link=document.createElement("a");
 
 link.href=URL.createObjectURL(blob);
-link.download="diagnostico-${nombre}.ps1";
+link.download="diagnostico-"+equipo+".bat";
 
 link.click();
 
