@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
-<title>Portal TI</title>
+
+<title>Portal de Soporte TI</title>
 
 <style>
 
 body{
 background:#0f172a;
-font-family:Arial;
-color:#e5e7eb;
+font-family:Segoe UI;
+color:white;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+margin:0;
 }
 
 .card{
 background:#020617;
-padding:25px;
+padding:30px;
+width:520px;
 border-radius:14px;
-width:480px;
-box-shadow:0 0 25px rgba(0,0,0,.6);
+box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
 h1{
 text-align:center;
-font-size:18px;
-margin-bottom:8px;
+margin-bottom:15px;
 }
 
 .tabs{
@@ -38,17 +41,18 @@ margin-bottom:20px;
 
 .tab{
 flex:1;
-padding:8px;
+padding:10px;
 border-radius:8px;
 background:#020617;
 border:1px solid #334155;
-cursor:pointer;
 text-align:center;
+cursor:pointer;
 }
 
 .tab.active{
 background:#22c55e;
 color:black;
+font-weight:bold;
 }
 
 .section{
@@ -59,10 +63,16 @@ display:none;
 display:block;
 }
 
+label{
+margin-top:10px;
+display:block;
+font-size:13px;
+}
+
 select,input{
 width:100%;
 padding:10px;
-margin-top:6px;
+margin-top:5px;
 border-radius:8px;
 border:1px solid #334155;
 background:#020617;
@@ -70,17 +80,18 @@ color:white;
 }
 
 .preview{
-margin-top:20px;
-padding:14px;
+margin-top:18px;
+padding:12px;
 background:black;
 color:#22c55e;
 font-family:Consolas;
 text-align:center;
 border-radius:8px;
+font-size:16px;
 }
 
 button{
-margin-top:15px;
+margin-top:12px;
 width:100%;
 padding:10px;
 border:none;
@@ -90,7 +101,12 @@ font-weight:bold;
 cursor:pointer;
 }
 
+button:hover{
+background:#16a34a;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -100,8 +116,15 @@ cursor:pointer;
 <h1>Portal de Herramientas TI</h1>
 
 <div class="tabs">
-<div class="tab active" onclick="tab('generador',this)">Generador</div>
-<div class="tab" onclick="tab('diagnostico',this)">Diagnóstico</div>
+
+<div class="tab active" onclick="tab('generador',this)">
+Generador
+</div>
+
+<div class="tab" onclick="tab('diagnostico',this)">
+Diagnóstico
+</div>
+
 </div>
 
 <!-- GENERADOR -->
@@ -109,33 +132,45 @@ cursor:pointer;
 <div class="section active" id="generador">
 
 <label>Empresa</label>
+
 <select id="empresa">
+
 <option value="">Seleccione</option>
 <option value="COL">COLTEFINANCIERA</option>
 <option value="FLA">FLAMINGO</option>
 <option value="CON">CONNSER</option>
+
+</select>
+
+<label>Tipo</label>
+
+<select id="tipo">
+
+<option value="">Seleccione</option>
+<option value="LP">Laptop</option>
+<option value="DT">Desktop</option>
+
 </select>
 
 <label>Área</label>
+
 <select id="area">
+
 <option value="">Seleccione</option>
 <option value="TI">Tecnología</option>
 <option value="COM">Comercial</option>
 <option value="OPE">Operaciones</option>
-</select>
 
-<label>Tipo</label>
-<select id="tipo">
-<option value="">Seleccione</option>
-<option value="LP">Laptop</option>
-<option value="DT">Desktop</option>
 </select>
 
 <label>Serial</label>
-<input id="serial">
+
+<input id="serial" placeholder="Serial del equipo">
 
 <div class="preview" id="preview">
-Nombre aquí
+
+COL-LP-TI-XXXX
+
 </div>
 
 </div>
@@ -145,14 +180,19 @@ Nombre aquí
 <div class="section" id="diagnostico">
 
 <label>Nombre del equipo</label>
-<input id="equipo">
+
+<input id="equipo" placeholder="Ej: COL-LP-TI-7F2A">
 
 <button onclick="descargarDiagnostico()">
 Descargar Diagnóstico Remoto
 </button>
 
-<button onclick="descargarMonitor()">
-Descargar Monitor Safetica
+<button onclick="descargarMonitorLocal()">
+Monitor Safetica LOCAL
+</button>
+
+<button onclick="descargarMonitorRemoto()">
+Monitor Safetica REMOTO
 </button>
 
 </div>
@@ -164,28 +204,32 @@ Descargar Monitor Safetica
 function tab(id,el){
 
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
+
 el.classList.add("active")
 
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+
 document.getElementById(id).classList.add("active")
 
 }
 
 const empresa=document.getElementById("empresa")
-const area=document.getElementById("area")
 const tipo=document.getElementById("tipo")
+const area=document.getElementById("area")
 const serial=document.getElementById("serial")
 const preview=document.getElementById("preview")
 
 function generar(){
 
 let e=empresa.value
-let a=area.value
 let t=tipo.value
+let a=area.value
 let s=serial.value
 
 if(s.length>=4){
+
 s=s.slice(-4).toUpperCase()
+
 }
 
 let nombre=[e,t,a,s].filter(Boolean).join("-")
@@ -195,8 +239,8 @@ preview.innerText=nombre
 }
 
 empresa.onchange=generar
-area.onchange=generar
 tipo.onchange=generar
+area.onchange=generar
 serial.oninput=generar
 
 function descargarDiagnostico(){
@@ -204,45 +248,113 @@ function descargarDiagnostico(){
 let equipo=document.getElementById("equipo").value
 
 if(!equipo){
+
 alert("Ingrese nombre del equipo")
+
 return
+
 }
 
 let contenido=
+
 "@echo off\n"+
-"set EQUIPO="+equipo+"\n\n"+
-"echo DIAGNOSTICO REMOTO\n\n"+
-"psexec \\\\"+"%EQUIPO% cmd /c systeminfo\n"+
-"psexec \\\\"+"%EQUIPO% cmd /c tasklist\n"+
-"psexec \\\\"+"%EQUIPO% cmd /c ipconfig /all\n"+
+"set PC="+equipo+"\n\n"+
+"echo DIAGNOSTICO REMOTO %PC%\n\n"+
+"psexec \\\\%PC% cmd /c systeminfo\n"+
+"psexec \\\\%PC% cmd /c tasklist\n"+
+"psexec \\\\%PC% cmd /c ipconfig /all\n"+
 "pause\n"
 
 let blob=new Blob([contenido],{type:"text/plain"})
 let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
+
 link.download="diagnostico_"+equipo+".bat"
 
 link.click()
 
 }
 
-function descargarMonitor(){
+function descargarMonitorLocal(){
 
 let contenido=
-"$procesos='safetica','safeticaservice'\n"+
+
+"$procesos=@('STCService','STEventService','STContentService','STAService')\n"+
+"\n"+
 "while($true){\n"+
-"clear\n"+
-"get-process | where {$procesos -contains $_.ProcessName} |\n"+
-"select ProcessName,CPU,Id,@{n='RAM_MB';e={[math]::round($_.WorkingSet64/1MB,2)}}\n"+
-"start-sleep 2\n"+
+"Clear-Host\n"+
+"Write-Host 'MONITOR SAFETICA LOCAL'\n"+
+"\n"+
+"foreach($p in $procesos){\n"+
+"$proc=Get-Process -Name $p -ErrorAction SilentlyContinue\n"+
+"\n"+
+"if($proc){\n"+
+"$ram=[math]::Round($proc.WorkingSet64/1MB,2)\n"+
+"Write-Host $p 'CPU:' $proc.CPU 'RAM:' $ram 'MB'\n"+
+"}else{\n"+
+"Write-Host $p 'NO ACTIVO'\n"+
+"}\n"+
+"}\n"+
+"\n"+
+"Start-Sleep 2\n"+
 "}"
 
 let blob=new Blob([contenido],{type:"text/plain"})
 let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
-link.download="monitor_safetica.ps1"
+
+link.download="monitor_safetica_local.ps1"
+
+link.click()
+
+}
+
+function descargarMonitorRemoto(){
+
+let equipo=document.getElementById("equipo").value
+
+if(!equipo){
+
+alert("Ingrese nombre del equipo")
+
+return
+
+}
+
+let contenido=
+
+"$pc='"+equipo+"'\n"+
+"\n"+
+"while($true){\n"+
+"Clear-Host\n"+
+"Write-Host 'MONITOR SAFETICA REMOTO -> '+$pc\n"+
+"\n"+
+"Invoke-Command -ComputerName $pc -ScriptBlock {\n"+
+"$procesos=@('STCService','STEventService','STContentService','STAService')\n"+
+"\n"+
+"foreach($p in $procesos){\n"+
+"$proc=Get-Process -Name $p -ErrorAction SilentlyContinue\n"+
+"\n"+
+"if($proc){\n"+
+"$ram=[math]::Round($proc.WorkingSet64/1MB,2)\n"+
+"Write-Host $p 'CPU:' $proc.CPU 'RAM:' $ram 'MB'\n"+
+"}else{\n"+
+"Write-Host $p 'NO ACTIVO'\n"+
+"}\n"+
+"}\n"+
+"}\n"+
+"\n"+
+"Start-Sleep 3\n"+
+"}"
+
+let blob=new Blob([contenido],{type:"text/plain"})
+let link=document.createElement("a")
+
+link.href=URL.createObjectURL(blob)
+
+link.download="monitor_safetica_remoto_"+equipo+".ps1"
 
 link.click()
 
@@ -251,4 +363,5 @@ link.click()
 </script>
 
 </body>
+
 </html>
