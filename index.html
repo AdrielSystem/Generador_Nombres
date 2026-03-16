@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Portal TI</title>
+<title>Portal TI - Herramientas</title>
 
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 
@@ -10,7 +10,7 @@
 
 body{
 background:#0f172a;
-font-family:Arial;
+font-family:Arial,sans-serif;
 color:#e5e7eb;
 display:flex;
 justify-content:center;
@@ -98,7 +98,7 @@ font-size:16px;
 }
 
 button{
-margin-top:18px;
+margin-top:15px;
 width:100%;
 padding:10px;
 border:none;
@@ -107,6 +107,10 @@ background:#22c55e;
 color:black;
 font-weight:bold;
 cursor:pointer;
+}
+
+button:hover{
+opacity:.85;
 }
 
 .switchBox{
@@ -243,11 +247,15 @@ El nombre se construirá aquí…
 
 <div class="section" id="diagnostico">
 
-<label>Nombre del equipo</label>
-<input id="equipoDiag" placeholder="Ej: PC123">
+<label>Nombre del equipo remoto</label>
+<input id="equipoDiag" placeholder="Ej: PC-123">
 
 <button onclick="descargarDiagnostico()">
-Descargar Script Diagnóstico
+Descargar Script Diagnóstico Remoto
+</button>
+
+<button onclick="descargarMonitor()">
+Descargar Monitor Safetica DLP
 </button>
 
 </div>
@@ -322,44 +330,86 @@ alert("Ingrese el nombre del equipo");
 return;
 }
 
-let script=`@echo off
-set EQUIPO=${equipo}
+let script=\`@echo off
+set EQUIPO=\${equipo}
 
 echo ============================================
-echo    DIAGNOSTICO REMOTO AVANZADO VIA PsExec
+echo DIAGNOSTICO REMOTO VIA PsExec
 echo ============================================
-echo.
 
-echo Equipo objetivo: %EQUIPO%
+echo Equipo: %EQUIPO%
 
-for /f "tokens=1-4 delims=/ " %%a in ("%date%") do (set DD=%%a& set MM=%%b& set YYYY=%%c)
-for /f "tokens=1-2 delims=: " %%a in ("%time%") do (set HH=%%a& set MN=%%b)
-set HH=%HH: =0%
-set FECHA=%YYYY%%MM%%DD%_%HH%%MN%
+psexec \\\\\\\\%EQUIPO% cmd /c systeminfo
+psexec \\\\\\\\%EQUIPO% cmd /c tasklist
+psexec \\\\\\\\%EQUIPO% cmd /c ipconfig /all
+psexec \\\\\\\\%EQUIPO% cmd /c netstat -ano
+psexec \\\\\\\\%EQUIPO% cmd /c query user
 
-set RUTA_LOCAL=C:\\Diag_Remoto\\resultados\\%EQUIPO%_%FECHA%
-mkdir "%RUTA_LOCAL%"
-
-echo Ejecutando diagnosticos en: %EQUIPO%
-
-psexec \\\\%EQUIPO% cmd /c systeminfo > "%RUTA_LOCAL%\\01_systeminfo.txt"
-psexec \\\\%EQUIPO% cmd /c tasklist > "%RUTA_LOCAL%\\02_tasklist.txt"
-psexec \\\\%EQUIPO% cmd /c ipconfig /all > "%RUTA_LOCAL%\\03_red.txt"
-psexec \\\\%EQUIPO% cmd /c netstat -ano > "%RUTA_LOCAL%\\04_conexiones.txt"
-psexec \\\\%EQUIPO% cmd /c query user > "%RUTA_LOCAL%\\05_usuarios.txt"
-
-echo.
-echo Diagnostico finalizado
-echo Ruta: %RUTA_LOCAL%
 pause
-`;
+\`;
 
 let blob=new Blob([script],{type:"text/plain"});
-
 let link=document.createElement("a");
 
 link.href=URL.createObjectURL(blob);
-link.download="diagnostico-"+equipo+".bat";
+link.download="diagnostico_"+equipo+".bat";
+
+link.click();
+
+}
+
+function descargarMonitor(){
+
+let script=\`
+
+$procesos = "safetica","safeticaservice","safeticaendpoint"
+
+$log = "C:\\\\Diag_Remoto\\\\safetica_monitor.csv"
+
+if(!(Test-Path "C:\\\\Diag_Remoto")){
+New-Item -ItemType Directory -Path "C:\\\\Diag_Remoto"
+}
+
+"Fecha,Proceso,CPU,RAM_MB,Hilos" | Out-File $log
+
+while($true){
+
+Clear-Host
+
+Write-Host "===================================="
+Write-Host " MONITOR SAFETICA DLP TIEMPO REAL"
+Write-Host "===================================="
+
+$fecha = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+Get-Process | Where-Object {
+$procesos -contains $_.ProcessName
+} | ForEach-Object {
+
+$ram = [math]::Round($_.WorkingSet64 / 1MB,2)
+
+Write-Host "Proceso :" $_.ProcessName
+Write-Host "PID     :" $_.Id
+Write-Host "CPU     :" $_.CPU
+Write-Host "RAM MB  :" $ram
+Write-Host "Hilos   :" $_.Threads.Count
+Write-Host "----------------------------"
+
+"$fecha,$($_.ProcessName),$($_.CPU),$ram,$($_.Threads.Count)" | Out-File $log -Append
+
+}
+
+Start-Sleep 2
+
+}
+
+\`;
+
+let blob=new Blob([script],{type:"text/plain"});
+let link=document.createElement("a");
+
+link.href=URL.createObjectURL(blob);
+link.download="monitor_safetica.ps1";
 
 link.click();
 
