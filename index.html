@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <title>Portal de Soporte TI</title>
 
 <style>
@@ -23,7 +22,7 @@ margin:0;
 .card{
 background:#020617;
 padding:30px;
-width:520px;
+width:540px;
 border-radius:14px;
 box-shadow:0 0 30px rgba(0,0,0,.7);
 }
@@ -271,31 +270,23 @@ function descargarMonitorLocal(){
 
 let contenido=
 
-"$procesos=@('STCService','STEventService','STContentService','STAService')\n"+
+"@echo off\n"+
+":loop\n"+
+"cls\n"+
+"echo MONITOR SAFETICA LOCAL\n\n"+
+"tasklist | findstr /I STCService\n"+
+"tasklist | findstr /I STEventService\n"+
+"tasklist | findstr /I STContentService\n"+
+"tasklist | findstr /I STAService\n"+
 "\n"+
-"while($true){\n"+
-"Clear-Host\n"+
-"Write-Host 'MONITOR SAFETICA LOCAL'\n"+
-"\n"+
-"foreach($p in $procesos){\n"+
-"$proc=Get-Process -Name $p -ErrorAction SilentlyContinue\n"+
-"\n"+
-"if($proc){\n"+
-"$ram=[math]::Round($proc.WorkingSet64/1MB,2)\n"+
-"Write-Host $p 'CPU:' $proc.CPU 'RAM:' $ram 'MB'\n"+
-"}else{\n"+
-"Write-Host $p 'NO ACTIVO'\n"+
-"}\n"+
-"}\n"+
-"\n"+
-"Start-Sleep 2\n"+
-"}"
+"timeout /t 5 >nul\n"+
+"goto loop\n"
 
 let blob=new Blob([contenido],{type:"text/plain"})
 let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
-link.download="monitor_safetica_local.ps1"
+link.download="monitor_safetica_local.bat"
 link.click()
 
 }
@@ -312,17 +303,29 @@ return
 let contenido=
 
 "@echo off\n"+
-"set PC="+equipo+"\n\n"+
+"set PC="+equipo+"\n"+
+"psexec -accepteula >nul 2>&1\n\n"+
 ":loop\n"+
 "cls\n"+
-"echo MONITOR SAFETICA REMOTO %PC%\n\n"+
-"\n"+
-"psexec \\\\%PC% tasklist | findstr STCService\n"+
-"psexec \\\\%PC% tasklist | findstr STEventService\n"+
-"psexec \\\\%PC% tasklist | findstr STContentService\n"+
-"psexec \\\\%PC% tasklist | findstr STAService\n"+
-"\n"+
-"timeout /t 3 >nul\n"+
+"echo ==================================\n"+
+"echo MONITOR SAFETICA REMOTO\n"+
+"echo EQUIPO %PC%\n"+
+"echo ==================================\n\n"+
+"echo PROCESOS SAFETICA\n\n"+
+"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STCService.exe\"\n"+
+"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STEventService.exe\"\n"+
+"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STContentService.exe\"\n"+
+"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STAService.exe\"\n\n"+
+"echo SERVICIOS\n\n"+
+"psexec \\\\%PC% sc query STCService | find \"STATE\"\n"+
+"psexec \\\\%PC% sc query STEventService | find \"STATE\"\n"+
+"psexec \\\\%PC% sc query STContentService | find \"STATE\"\n"+
+"psexec \\\\%PC% sc query STAService | find \"STATE\"\n\n"+
+"echo DRIVERS\n\n"+
+"psexec \\\\%PC% driverquery | findstr /I dc2drv\n"+
+"psexec \\\\%PC% driverquery | findstr /I fltenum\n\n"+
+"echo Actualizando en 5 segundos...\n"+
+"timeout /t 5 >nul\n"+
 "goto loop\n"
 
 let blob=new Blob([contenido],{type:"text/plain"})
