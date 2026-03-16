@@ -133,8 +133,24 @@ select, input {
 <option value="LP">LP - Laptop</option>
 </select>
 
+<label>Marca del Equipo</label>
+<select id="marca">
+<option value="">Seleccione</option>
+<option value="DEL">DELL</option>
+<option value="LEN">LENOVO</option>
+<option value="HP">HP</option>
+<option value="ACE">ACER</option>
+<option value="ASU">ASUS</option>
+</select>
+
 <label>Serial completo</label>
 <input id="serial" placeholder="Ej: ABCD123456XYZ">
+
+<label>Sentido del Serial</label>
+<select id="sentido">
+<option value="final">Tomar últimos 4 del serial</option>
+<option value="inicio">Cambio de sentido del serial (primeros 4)</option>
+</select>
 
 <div class="preview" id="preview">
 <span>El nombre se construirá aquí…</span>
@@ -147,29 +163,47 @@ Icon by Ning Nong - Flaticon
 </div>
 
 <script>
+
 const empresa = document.getElementById("empresa");
 const area = document.getElementById("area");
 const tipo = document.getElementById("tipo");
+const marca = document.getElementById("marca");
 const serial = document.getElementById("serial");
+const sentido = document.getElementById("sentido");
 const preview = document.getElementById("preview");
 
-[empresa, area, tipo, serial].forEach(el => {
+[empresa, area, tipo, marca, serial, sentido].forEach(el => {
   el.addEventListener("input", actualizarNombre);
   el.addEventListener("change", actualizarNombre);
 });
 
 function actualizarNombre() {
+
   const e = empresa.value;
   const a = area.value;
   const t = tipo.value;
+  const m = marca.value;
   const s = serial.value.replace(/\s+/g, "");
 
   let partes = [];
 
   if (e) partes.push(e);
   if (t) partes.push(t);
+  if (m) partes.push(m);
   if (a) partes.push(a);
-  if (s.length >= 1) partes.push(s.slice(-4).toUpperCase());
+
+  if (s.length >= 4) {
+
+    let serialFinal = "";
+
+    if (sentido.value === "inicio") {
+      serialFinal = s.slice(0,4).toUpperCase();
+    } else {
+      serialFinal = s.slice(-4).toUpperCase();
+    }
+
+    partes.push(serialFinal);
+  }
 
   if (partes.length === 0) {
     preview.innerHTML = "<span>El nombre se construirá aquí…</span>";
@@ -179,10 +213,12 @@ function actualizarNombre() {
   const nombre = partes.join("-");
   preview.textContent = nombre;
 
-  if (e && a && t && s.length >= 4) {
+  if (e && a && t && m && s.length >= 4) {
     navigator.clipboard.writeText(nombre);
   }
+
 }
+
 </script>
 
 </body>
