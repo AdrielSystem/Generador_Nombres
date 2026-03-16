@@ -22,14 +22,14 @@ margin:0;
 .card{
 background:#020617;
 padding:30px;
-width:560px;
+width:620px;
 border-radius:14px;
 box-shadow:0 0 30px rgba(0,0,0,.7);
 }
 
 h1{
 text-align:center;
-margin-bottom:15px;
+margin-bottom:20px;
 }
 
 .tabs{
@@ -79,14 +79,14 @@ color:white;
 }
 
 .preview{
-margin-top:18px;
-padding:12px;
+margin-top:20px;
+padding:14px;
 background:black;
 color:#22c55e;
 font-family:Consolas;
 text-align:center;
 border-radius:8px;
-font-size:18px;
+font-size:20px;
 }
 
 button{
@@ -104,10 +104,26 @@ button:hover{
 background:#16a34a;
 }
 
-.radio-group{
+.toggle-container{
 display:flex;
 gap:10px;
-margin-top:6px;
+margin-top:8px;
+}
+
+.toggle{
+flex:1;
+padding:10px;
+border-radius:8px;
+border:1px solid #334155;
+text-align:center;
+cursor:pointer;
+background:#020617;
+}
+
+.toggle.active{
+background:#22c55e;
+color:black;
+font-weight:bold;
 }
 
 </style>
@@ -141,19 +157,13 @@ Diagnóstico
 <select id="empresa">
 
 <option value="">Seleccione</option>
+<option value="FLA">GRUPO FLAMINGO</option>
 <option value="COL">COLTEFINANCIERA</option>
-<option value="FLA">FLAMINGO</option>
 <option value="CON">CONNSER</option>
-
-</select>
-
-<label>Tipo Equipo</label>
-
-<select id="tipo">
-
-<option value="">Seleccione</option>
-<option value="LP">Laptop</option>
-<option value="DT">Desktop</option>
+<option value="NOV">NOVAFIANZA</option>
+<option value="LNK">LINK SEGUROS</option>
+<option value="LAT">LATAM</option>
+<option value="FOR">FORJANDO</option>
 
 </select>
 
@@ -162,28 +172,66 @@ Diagnóstico
 <select id="area">
 
 <option value="">Seleccione</option>
+<option value="PRE">Presidencia</option>
 <option value="TI">Tecnología</option>
+<option value="DES">Desarrollo</option>
+<option value="INN">Innovación</option>
 <option value="COM">Comercial</option>
-<option value="OPE">Operaciones</option>
+<option value="VTA">Ventas</option>
+<option value="MER">Mercadeo</option>
+<option value="SAC">Servicio al Cliente</option>
+<option value="OPS">Operaciones</option>
+<option value="ADM">Administración</option>
+<option value="FIN">Financiera</option>
+<option value="CTB">Contabilidad</option>
+<option value="AUD">Auditoría</option>
+<option value="RIE">Riesgos</option>
+<option value="CUM">Cumplimiento</option>
+<option value="JUR">Jurídica</option>
+<option value="PLA">Planeación</option>
+<option value="GH">Gestión Humana</option>
+<option value="CMP">Compras</option>
+<option value="LOG">Logística</option>
 
 </select>
 
-<label>Serial</label>
+<label>Tipo de equipo</label>
 
-<input id="serial" placeholder="Serial del equipo">
+<select id="tipo">
 
-<label>Formato serial</label>
+<option value="">Auto detectar</option>
+<option value="LP">Laptop</option>
+<option value="DT">Desktop</option>
 
-<div class="radio-group">
+</select>
 
-<label><input type="radio" name="modoSerial" value="last" checked> Últimos 4</label>
-<label><input type="radio" name="modoSerial" value="first"> Primeros 4</label>
+<label>Serial del equipo</label>
+
+<input id="serial" placeholder="Ingrese serial">
+
+<label>Formato del serial</label>
+
+<div class="toggle-container">
+
+<div class="toggle active" id="last" onclick="setSerialMode('last')">
+Últimos 4
+</div>
+
+<div class="toggle" id="first" onclick="setSerialMode('first')">
+Primeros 4
+</div>
 
 </div>
 
 <div class="preview" id="preview">
-COL-LP-TI-XXXX
+
+EMP-TIPO-AREA-XXXX
+
 </div>
+
+<button onclick="copiarNombre()">
+Copiar nombre
+</button>
 
 </div>
 
@@ -195,16 +243,8 @@ COL-LP-TI-XXXX
 
 <input id="equipo" placeholder="Ej: COL-LP-TI-7F2A">
 
-<button onclick="descargarDiagnostico()">
-Descargar Diagnóstico Remoto
-</button>
-
-<button onclick="descargarMonitorLocal()">
-Monitor Safetica LOCAL
-</button>
-
 <button onclick="descargarMonitorRemoto()">
-Monitor Safetica REMOTO
+Monitor Safetica Remoto
 </button>
 
 </div>
@@ -213,6 +253,8 @@ Monitor Safetica REMOTO
 
 <script>
 
+let serialMode="last"
+
 function tab(id,el){
 
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
@@ -220,6 +262,19 @@ el.classList.add("active")
 
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
 document.getElementById(id).classList.add("active")
+
+}
+
+function setSerialMode(mode){
+
+serialMode=mode
+
+document.getElementById("last").classList.remove("active")
+document.getElementById("first").classList.remove("active")
+
+document.getElementById(mode).classList.add("active")
+
+generar()
 
 }
 
@@ -238,9 +293,7 @@ let s=serial.value
 
 if(s.length>=4){
 
-let modo=document.querySelector('input[name="modoSerial"]:checked').value
-
-if(modo==="last"){
+if(serialMode==="last"){
 s=s.slice(-4)
 }else{
 s=s.slice(0,4)
@@ -261,59 +314,13 @@ tipo.onchange=generar
 area.onchange=generar
 serial.oninput=generar
 
-document.querySelectorAll('input[name="modoSerial"]').forEach(r=>{
-r.onchange=generar
-})
+function copiarNombre(){
 
-function descargarDiagnostico(){
+let texto=preview.innerText
 
-let equipo=document.getElementById("equipo").value
+navigator.clipboard.writeText(texto)
 
-if(!equipo){
-alert("Ingrese nombre del equipo")
-return
-}
-
-let contenido=
-
-"@echo off\n"+
-"set PC="+equipo+"\n\n"+
-"echo ===== DIAGNOSTICO REMOTO =====\n\n"+
-"psexec \\\\%PC% systeminfo\n"+
-"psexec \\\\%PC% tasklist\n"+
-"psexec \\\\%PC% ipconfig /all\n"+
-"pause\n"
-
-let blob=new Blob([contenido],{type:"text/plain"})
-let link=document.createElement("a")
-
-link.href=URL.createObjectURL(blob)
-link.download="diagnostico_"+equipo+".bat"
-link.click()
-
-}
-
-function descargarMonitorLocal(){
-
-let contenido=
-
-"@echo off\n"+
-":loop\n"+
-"cls\n"+
-"echo MONITOR SAFETICA LOCAL\n\n"+
-"tasklist | findstr /I STCService\n"+
-"tasklist | findstr /I STEventService\n"+
-"tasklist | findstr /I STContentService\n"+
-"\n"+
-"timeout /t 5 >nul\n"+
-"goto loop\n"
-
-let blob=new Blob([contenido],{type:"text/plain"})
-let link=document.createElement("a")
-
-link.href=URL.createObjectURL(blob)
-link.download="monitor_safetica_local.bat"
-link.click()
+alert("Nombre copiado: "+texto)
 
 }
 
@@ -349,8 +356,6 @@ let contenido=
 "echo.\n"+
 "echo [DRIVER DLP]\n\n"+
 "psexec \\\\%PC% -h -s driverquery | findstr /I dc2drv\n\n"+
-"echo.\n"+
-"echo Actualizando en 5 segundos...\n"+
 "timeout /t 5 >nul\n"+
 "goto loop\n"
 
