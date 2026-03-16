@@ -4,12 +4,10 @@
 <meta charset="UTF-8">
 <title>Generador de Nombre de Equipo</title>
 
-<!-- FAVICON -->
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-<link rel="shortcut icon" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
 
 <style>
+
 body {
   background: #0f172a;
   font-family: Arial, sans-serif;
@@ -67,97 +65,123 @@ select, input {
   text-align: center;
   border-radius: 8px;
   font-size: 16px;
-  min-height: 24px;
 }
 
-.preview span {
-  color: #64748b;
+.switchBox{
+  margin-top:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
-.credit {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 11px;
-  color: #475569;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 26px;
 }
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #475569;
+  border-radius: 34px;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  transition:.3s;
+}
+
+.slider:before {
+  position:absolute;
+  content:"";
+  height:20px;
+  width:20px;
+  left:3px;
+  bottom:3px;
+  background:white;
+  border-radius:50%;
+  transition:.3s;
+}
+
+input:checked + .slider {
+  background-color:#22c55e;
+}
+
+input:checked + .slider:before {
+  transform:translateX(26px);
+}
+
+.modeLabel{
+  font-size:13px;
+  color:#94a3b8;
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="card">
+
 <h1>Generador de Nombre de Equipo</h1>
 <small>No renombra · No une al dominio</small>
 
 <label>Empresa</label>
 <select id="empresa">
 <option value="">Seleccione</option>
-<option value="FLA">1 - GRUPO FLAMINGO (FLA)</option>
-<option value="COL">2 - COLTEFINANCIERA (COL)</option>
-<option value="CON">3 - CONNSER (CON)</option>
-<option value="NOV">4 - NOVAFIANZA (NOV)</option>
-<option value="LNK">5 - LINK SEGUROS (LNK)</option>
-<option value="LAT">6 - LATAM (LAT)</option>
-<option value="FOR">7 - FORJANDO (FOR)</option>
+<option value="FLA">GRUPO FLAMINGO</option>
+<option value="COL">COLTEFINANCIERA</option>
+<option value="CON">CONNSER</option>
+<option value="NOV">NOVAFIANZA</option>
+<option value="LNK">LINK SEGUROS</option>
+<option value="LAT">LATAM</option>
+<option value="FOR">FORJANDO</option>
 </select>
 
 <label>Área</label>
 <select id="area">
 <option value="">Seleccione</option>
-<option value="PRE">1 - Presidencia (PRE)</option>
-<option value="TI">2 - Tecnología (TI)</option>
-<option value="DES">3 - Desarrollo (DES)</option>
-<option value="INN">4 - Innovación (INN)</option>
-<option value="COM">5 - Comercial (COM)</option>
-<option value="VTA">6 - Ventas (VTA)</option>
-<option value="MER">7 - Mercadeo (MER)</option>
-<option value="SAC">8 - Servicio al Cliente (SAC)</option>
-<option value="OPE">9 - Operaciones (OPE)</option>
-<option value="ADM">10 - Administrativa (ADM)</option>
-<option value="FIN">11 - Financiera (FIN)</option>
-<option value="CTB">12 - Contabilidad (CTB)</option>
-<option value="AUD">13 - Auditoría (AUD)</option>
-<option value="RIE">14 - Riesgos (RIE)</option>
-<option value="CUM">15 - Cumplimiento (CUM)</option>
-<option value="JUR">16 - Jurídica (JUR)</option>
-<option value="PLA">17 - Planeación (PLA)</option>
-<option value="GH">18 - Gestión Humana (GH)</option>
-<option value="CMP">19 - Compras (CMP)</option>
-<option value="LOG">20 - Logística (LOG)</option>
+<option value="PRE">Presidencia</option>
+<option value="TI">Tecnología</option>
+<option value="DES">Desarrollo</option>
+<option value="COM">Comercial</option>
+<option value="SAC">Servicio al Cliente</option>
+<option value="OPE">Operaciones</option>
+<option value="ADM">Administrativa</option>
+<option value="FIN">Financiera</option>
+<option value="GH">Gestión Humana</option>
+<option value="LOG">Logística</option>
 </select>
 
 <label>Tipo de Equipo</label>
 <select id="tipo">
 <option value="">Seleccione</option>
-<option value="DT">DT - Desktop</option>
-<option value="LP">LP - Laptop</option>
-</select>
-
-<label>Marca del Equipo</label>
-<select id="marca">
-<option value="">Seleccione</option>
-<option value="DEL">DELL</option>
-<option value="LEN">LENOVO</option>
-<option value="HP">HP</option>
-<option value="ACE">ACER</option>
-<option value="ASU">ASUS</option>
+<option value="DT">Desktop</option>
+<option value="LP">Laptop</option>
 </select>
 
 <label>Serial completo</label>
 <input id="serial" placeholder="Ej: ABCD123456XYZ">
 
-<label>Sentido del Serial</label>
-<select id="sentido">
-<option value="final">Tomar últimos 4 del serial</option>
-<option value="inicio">Cambio de sentido del serial (primeros 4)</option>
-</select>
+<div class="switchBox">
 
-<div class="preview" id="preview">
-<span>El nombre se construirá aquí…</span>
+<span class="modeLabel">Primeros 4</span>
+
+<label class="switch">
+<input type="checkbox" id="modoSerial">
+<span class="slider"></span>
+</label>
+
+<span class="modeLabel">Últimos 4</span>
+
 </div>
 
-<div class="credit">
-Icon by Ning Nong - Flaticon
+<div class="preview" id="preview">
+El nombre se construirá aquí…
 </div>
 
 </div>
@@ -167,55 +191,49 @@ Icon by Ning Nong - Flaticon
 const empresa = document.getElementById("empresa");
 const area = document.getElementById("area");
 const tipo = document.getElementById("tipo");
-const marca = document.getElementById("marca");
 const serial = document.getElementById("serial");
-const sentido = document.getElementById("sentido");
+const modoSerial = document.getElementById("modoSerial");
 const preview = document.getElementById("preview");
 
-[empresa, area, tipo, marca, serial, sentido].forEach(el => {
-  el.addEventListener("input", actualizarNombre);
-  el.addEventListener("change", actualizarNombre);
+[empresa, area, tipo, serial, modoSerial].forEach(el=>{
+  el.addEventListener("change", generar);
+  el.addEventListener("input", generar);
 });
 
-function actualizarNombre() {
+function generar(){
 
-  const e = empresa.value;
-  const a = area.value;
-  const t = tipo.value;
-  const m = marca.value;
-  const s = serial.value.replace(/\s+/g, "");
+let e = empresa.value;
+let a = area.value;
+let t = tipo.value;
+let s = serial.value.replace(/\s/g,"");
 
-  let partes = [];
+let serialFinal="";
 
-  if (e) partes.push(e);
-  if (t) partes.push(t);
-  if (m) partes.push(m);
-  if (a) partes.push(a);
+if(s.length>=4){
 
-  if (s.length >= 4) {
+if(modoSerial.checked){
+serialFinal = s.slice(-4).toUpperCase();
+}else{
+serialFinal = s.slice(0,4).toUpperCase();
+}
 
-    let serialFinal = "";
+}
 
-    if (sentido.value === "inicio") {
-      serialFinal = s.slice(0,4).toUpperCase();
-    } else {
-      serialFinal = s.slice(-4).toUpperCase();
-    }
+let partes=[];
 
-    partes.push(serialFinal);
-  }
+if(e) partes.push(e);
+if(t) partes.push(t);
+if(a) partes.push(a);
+if(serialFinal) partes.push(serialFinal);
 
-  if (partes.length === 0) {
-    preview.innerHTML = "<span>El nombre se construirá aquí…</span>";
-    return;
-  }
+if(partes.length==0){
+preview.innerHTML="El nombre se construirá aquí…";
+return;
+}
 
-  const nombre = partes.join("-");
-  preview.textContent = nombre;
+let nombre = partes.join("-");
 
-  if (e && a && t && m && s.length >= 4) {
-    navigator.clipboard.writeText(nombre);
-  }
+preview.textContent = nombre;
 
 }
 
