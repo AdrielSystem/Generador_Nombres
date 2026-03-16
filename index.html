@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Portal Herramientas TI</title>
+<title>Portal Soporte TI</title>
 
 <style>
 
@@ -22,7 +22,7 @@ margin:0;
 .card{
 background:#020617;
 padding:30px;
-width:620px;
+width:640px;
 border-radius:14px;
 box-shadow:0 0 30px rgba(0,0,0,.7);
 }
@@ -195,21 +195,21 @@ Diagnóstico
 
 </select>
 
-<label>Tipo de equipo</label>
+<label>Tipo Equipo</label>
 
 <select id="tipo">
 
-<option value="">Auto detectar</option>
+<option value="">Seleccione</option>
 <option value="LP">Laptop</option>
 <option value="DT">Desktop</option>
 
 </select>
 
-<label>Serial del equipo</label>
+<label>Serial</label>
 
-<input id="serial" placeholder="Ingrese serial">
+<input id="serial" placeholder="Serial del equipo">
 
-<label>Formato del serial</label>
+<label>Formato serial</label>
 
 <div class="toggle-container">
 
@@ -224,13 +224,11 @@ Primeros 4
 </div>
 
 <div class="preview" id="preview">
-
 EMP-TIPO-AREA-XXXX
-
 </div>
 
 <button onclick="copiarNombre()">
-Copiar nombre
+Copiar nombre al portapapeles
 </button>
 
 </div>
@@ -242,6 +240,14 @@ Copiar nombre
 <label>Nombre del equipo</label>
 
 <input id="equipo" placeholder="Ej: COL-LP-TI-7F2A">
+
+<button onclick="descargarDiagnostico()">
+Descargar Diagnóstico Remoto
+</button>
+
+<button onclick="descargarMonitorLocal()">
+Monitor Safetica Local
+</button>
 
 <button onclick="descargarMonitorRemoto()">
 Monitor Safetica Remoto
@@ -317,10 +323,50 @@ serial.oninput=generar
 function copiarNombre(){
 
 let texto=preview.innerText
-
 navigator.clipboard.writeText(texto)
 
 alert("Nombre copiado: "+texto)
+
+}
+
+function descargarDiagnostico(){
+
+let equipo=document.getElementById("equipo").value
+
+if(!equipo){
+alert("Ingrese nombre del equipo")
+return
+}
+
+let contenido=
+
+"@echo off\n"+
+"set PC="+equipo+"\n\n"+
+"echo ===== DIAGNOSTICO REMOTO =====\n\n"+
+"psexec \\\\%PC% systeminfo\n"+
+"psexec \\\\%PC% tasklist\n"+
+"psexec \\\\%PC% ipconfig /all\n"+
+"pause\n"
+
+descargarArchivo(contenido,"diagnostico_"+equipo+".bat")
+
+}
+
+function descargarMonitorLocal(){
+
+let contenido=
+
+"@echo off\n"+
+":loop\n"+
+"cls\n"+
+"echo MONITOR SAFETICA LOCAL\n\n"+
+"tasklist | findstr /I STCService\n"+
+"tasklist | findstr /I STEventService\n"+
+"tasklist | findstr /I STContentService\n\n"+
+"timeout /t 5 >nul\n"+
+"goto loop\n"
+
+descargarArchivo(contenido,"monitor_safetica_local.bat")
 
 }
 
@@ -359,11 +405,17 @@ let contenido=
 "timeout /t 5 >nul\n"+
 "goto loop\n"
 
+descargarArchivo(contenido,"monitor_safetica_remoto_"+equipo+".bat")
+
+}
+
+function descargarArchivo(contenido,nombre){
+
 let blob=new Blob([contenido],{type:"text/plain"})
 let link=document.createElement("a")
 
 link.href=URL.createObjectURL(blob)
-link.download="monitor_safetica_remoto_"+equipo+".bat"
+link.download=nombre
 link.click()
 
 }
