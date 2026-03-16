@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Portal de Soporte TI</title>
+<title>Portal Herramientas TI</title>
 
 <style>
 
@@ -22,7 +22,7 @@ margin:0;
 .card{
 background:#020617;
 padding:30px;
-width:540px;
+width:560px;
 border-radius:14px;
 box-shadow:0 0 30px rgba(0,0,0,.7);
 }
@@ -86,7 +86,7 @@ color:#22c55e;
 font-family:Consolas;
 text-align:center;
 border-radius:8px;
-font-size:16px;
+font-size:18px;
 }
 
 button{
@@ -104,6 +104,12 @@ button:hover{
 background:#16a34a;
 }
 
+.radio-group{
+display:flex;
+gap:10px;
+margin-top:6px;
+}
+
 </style>
 
 </head>
@@ -112,12 +118,12 @@ background:#16a34a;
 
 <div class="card">
 
-<h1>Portal de Herramientas TI</h1>
+<h1>Portal Herramientas TI</h1>
 
 <div class="tabs">
 
 <div class="tab active" onclick="tab('generador',this)">
-Generador
+Generador Nombre
 </div>
 
 <div class="tab" onclick="tab('diagnostico',this)">
@@ -141,7 +147,7 @@ Diagnóstico
 
 </select>
 
-<label>Tipo</label>
+<label>Tipo Equipo</label>
 
 <select id="tipo">
 
@@ -166,10 +172,17 @@ Diagnóstico
 
 <input id="serial" placeholder="Serial del equipo">
 
+<label>Formato serial</label>
+
+<div class="radio-group">
+
+<label><input type="radio" name="modoSerial" value="last" checked> Últimos 4</label>
+<label><input type="radio" name="modoSerial" value="first"> Primeros 4</label>
+
+</div>
+
 <div class="preview" id="preview">
-
 COL-LP-TI-XXXX
-
 </div>
 
 </div>
@@ -224,7 +237,17 @@ let a=area.value
 let s=serial.value
 
 if(s.length>=4){
-s=s.slice(-4).toUpperCase()
+
+let modo=document.querySelector('input[name="modoSerial"]:checked').value
+
+if(modo==="last"){
+s=s.slice(-4)
+}else{
+s=s.slice(0,4)
+}
+
+s=s.toUpperCase()
+
 }
 
 let nombre=[e,t,a,s].filter(Boolean).join("-")
@@ -237,6 +260,10 @@ empresa.onchange=generar
 tipo.onchange=generar
 area.onchange=generar
 serial.oninput=generar
+
+document.querySelectorAll('input[name="modoSerial"]').forEach(r=>{
+r.onchange=generar
+})
 
 function descargarDiagnostico(){
 
@@ -277,7 +304,6 @@ let contenido=
 "tasklist | findstr /I STCService\n"+
 "tasklist | findstr /I STEventService\n"+
 "tasklist | findstr /I STContentService\n"+
-"tasklist | findstr /I STAService\n"+
 "\n"+
 "timeout /t 5 >nul\n"+
 "goto loop\n"
@@ -311,19 +337,19 @@ let contenido=
 "echo MONITOR SAFETICA REMOTO\n"+
 "echo EQUIPO %PC%\n"+
 "echo ==================================\n\n"+
-"echo PROCESOS SAFETICA\n\n"+
-"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STCService.exe\"\n"+
-"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STEventService.exe\"\n"+
-"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STContentService.exe\"\n"+
-"psexec \\\\%PC% tasklist /FI \"IMAGENAME eq STAService.exe\"\n\n"+
-"echo SERVICIOS\n\n"+
-"psexec \\\\%PC% sc query STCService | find \"STATE\"\n"+
-"psexec \\\\%PC% sc query STEventService | find \"STATE\"\n"+
-"psexec \\\\%PC% sc query STContentService | find \"STATE\"\n"+
-"psexec \\\\%PC% sc query STAService | find \"STATE\"\n\n"+
-"echo DRIVERS\n\n"+
-"psexec \\\\%PC% driverquery | findstr /I dc2drv\n"+
-"psexec \\\\%PC% driverquery | findstr /I fltenum\n\n"+
+"echo [PROCESOS SAFETICA]\n\n"+
+"psexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STCService.exe\" 2>nul\n"+
+"psexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STEventService.exe\" 2>nul\n"+
+"psexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STContentService.exe\" 2>nul\n\n"+
+"echo.\n"+
+"echo [SERVICIOS]\n\n"+
+"psexec \\\\%PC% -h -s sc query STCService | find \"STATE\"\n"+
+"psexec \\\\%PC% -h -s sc query STEventService | find \"STATE\"\n"+
+"psexec \\\\%PC% -h -s sc query STContentService | find \"STATE\"\n\n"+
+"echo.\n"+
+"echo [DRIVER DLP]\n\n"+
+"psexec \\\\%PC% -h -s driverquery | findstr /I dc2drv\n\n"+
+"echo.\n"+
 "echo Actualizando en 5 segundos...\n"+
 "timeout /t 5 >nul\n"+
 "goto loop\n"
