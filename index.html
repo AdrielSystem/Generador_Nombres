@@ -1,427 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8">
-<title>Portal Soporte TI</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portal Herramientas TI</title>
 <style>
-
-body{
-background:#0f172a;
-font-family:Segoe UI;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
-}
-
-.card{
-background:#020617;
-padding:30px;
-width:640px;
-border-radius:14px;
-box-shadow:0 0 30px rgba(0,0,0,.7);
-}
-
-h1{
-text-align:center;
-margin-bottom:20px;
-}
-
-.tabs{
-display:flex;
-gap:8px;
-margin-bottom:20px;
-}
-
-.tab{
-flex:1;
-padding:10px;
-border-radius:8px;
-background:#020617;
-border:1px solid #334155;
-text-align:center;
-cursor:pointer;
-}
-
-.tab.active{
-background:#22c55e;
-color:black;
-font-weight:bold;
-}
-
-.section{
-display:none;
-}
-
-.section.active{
-display:block;
-}
-
-label{
-margin-top:10px;
-display:block;
-font-size:13px;
-}
-
-select,input{
-width:100%;
-padding:10px;
-margin-top:5px;
-border-radius:8px;
-border:1px solid #334155;
-background:#020617;
-color:white;
-}
-
-.preview{
-margin-top:20px;
-padding:14px;
-background:black;
-color:#22c55e;
-font-family:Consolas;
-text-align:center;
-border-radius:8px;
-font-size:20px;
-}
-
-button{
-margin-top:12px;
-width:100%;
-padding:10px;
-border:none;
-border-radius:8px;
-background:#22c55e;
-font-weight:bold;
-cursor:pointer;
-}
-
-button:hover{
-background:#16a34a;
-}
-
-.toggle-container{
-display:flex;
-gap:10px;
-margin-top:8px;
-}
-
-.toggle{
-flex:1;
-padding:10px;
-border-radius:8px;
-border:1px solid #334155;
-text-align:center;
-cursor:pointer;
-background:#020617;
-}
-
-.toggle.active{
-background:#22c55e;
-color:black;
-font-weight:bold;
-}
-
+body{background:#0f172a;color:#fff;font-family:Segoe UI;margin:0;padding:20px}
+.card{max-width:1100px;margin:auto;background:#020617;padding:20px;border-radius:12px}
+.tabs{display:flex;gap:8px;margin-bottom:15px}
+.tab{padding:10px 15px;border:1px solid #334155;border-radius:8px;cursor:pointer}
+.tab.active{background:#22c55e;color:#000;font-weight:bold}
+.section{display:none}.section.active{display:block}
+.preview{background:#000;color:#22c55e;padding:12px;border-radius:8px;margin-top:10px}
+label{display:block;margin-top:10px}
+input,select,button{width:100%;padding:10px;margin-top:5px;border-radius:8px}
+button{background:#22c55e;border:0;font-weight:bold}
 </style>
-
 </head>
-
 <body>
-
 <div class="card">
-
 <h1>Portal Herramientas TI</h1>
 
 <div class="tabs">
-
-<div class="tab active" onclick="tab('generador',this)">
-Generador Nombre
+<div class="tab active" onclick="tab('generador',this)">Generador</div>
+<div class="tab" onclick="tab('diagnostico',this)">Diagnóstico</div>
+<div class="tab" onclick="tab('priorizacion',this)">Priorización</div>
 </div>
 
-<div class="tab" onclick="tab('diagnostico',this)">
-Diagnóstico
-</div>
-
-</div>
-
-<!-- GENERADOR -->
-
-<div class="section active" id="generador">
-
+<div id="generador" class="section active">
 <label>Empresa</label>
-
-<select id="empresa">
-
-<option value="">Seleccione</option>
-<option value="FLA">GRUPO FLAMINGO</option>
-<option value="COL">COLTEFINANCIERA</option>
-<option value="CON">CONNSER</option>
-<option value="NOV">NOVAFIANZA</option>
-<option value="LNK">LINK SEGUROS</option>
-<option value="LAT">LATAM</option>
-<option value="FOR">FORJANDO</option>
-
-</select>
-
+<select id="empresa"><option>COL</option><option>CON</option></select>
+<label>Tipo</label>
+<select id="tipo"><option>LP</option><option>DT</option></select>
 <label>Área</label>
-
-<select id="area">
-
-<option value="">Seleccione</option>
-<option value="PRE">Presidencia</option>
-<option value="TI">Tecnología</option>
-<option value="DES">Desarrollo</option>
-<option value="INN">Innovación</option>
-<option value="COM">Comercial</option>
-<option value="VTA">Ventas</option>
-<option value="MER">Mercadeo</option>
-<option value="SAC">Servicio al Cliente</option>
-<option value="OPS">Operaciones</option>
-<option value="ADM">Administración</option>
-<option value="FIN">Financiera</option>
-<option value="CTB">Contabilidad</option>
-<option value="AUD">Auditoría</option>
-<option value="RIE">Riesgos</option>
-<option value="CUM">Cumplimiento</option>
-<option value="JUR">Jurídica</option>
-<option value="PLA">Planeación</option>
-<option value="GH">Gestión Humana</option>
-<option value="CMP">Compras</option>
-<option value="LOG">Logística</option>
-
-</select>
-
-<label>Tipo Equipo</label>
-
-<select id="tipo">
-
-<option value="">Seleccione</option>
-<option value="LP">Laptop</option>
-<option value="DT">Desktop</option>
-
-</select>
-
+<select id="area"><option>TI</option><option>SAC</option></select>
 <label>Serial</label>
-
-<input id="serial" placeholder="Serial del equipo">
-
-<label>Formato serial</label>
-
-<div class="toggle-container">
-
-<div class="toggle active" id="last" onclick="setSerialMode('last')">
-Últimos 4
+<input id="serial">
+<div style="display:flex;gap:8px;margin-top:10px">
+<button onclick="serialMode='last';generar()">Últimos 4</button>
+<button onclick="serialMode='first';generar()">Primeros 4</button>
+</div>
+<div id="preview" class="preview">COL-LP-TI-XXXX</div>
 </div>
 
-<div class="toggle" id="first" onclick="setSerialMode('first')">
-Primeros 4
+<div id="diagnostico" class="section">
+<p>Área de diagnóstico lista para ampliar.</p>
 </div>
 
+<div id="priorizacion" class="section">
+<label>Impacto</label>
+<select id="impacto" onchange="calc()"><option value="1">1</option><option value="5">5</option></select>
+<label>Urgencia</label>
+<select id="urgencia" onchange="calc()"><option value="1">1</option><option value="5">5</option></select>
+<label>Riesgo</label>
+<select id="riesgo" onchange="calc()"><option value="1">1</option><option value="5">5</option></select>
+<label>Usuario</label>
+<select id="usuario" onchange="calc()"><option value="1">Operativo</option><option value="5">VIP</option></select>
+<div id="resultado" class="preview">P4 - BAJA</div>
 </div>
-
-<div class="preview" id="preview">
-EMP-TIPO-AREA-XXXX
-</div>
-
-<button onclick="copiarNombre()">
-Copiar nombre al portapapeles
-</button>
-
-</div>
-
-<!-- DIAGNOSTICO -->
-
-<div class="section" id="diagnostico">
-
-<label>Nombre del equipo</label>
-
-<input id="equipo" placeholder="Ej: COL-LP-TI-7F2A">
-
-<button onclick="descargarDiagnostico()">
-Descargar Diagnóstico Remoto
-</button>
-
-<button onclick="descargarMonitorLocal()">
-Monitor Safetica Local
-</button>
-
-<button onclick="descargarMonitorRemoto()">
-Monitor Safetica Remoto
-</button>
-
-</div>
-
 </div>
 
 <script>
-
-let serialMode="last"
-
+let serialMode='last';
 function tab(id,el){
-
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
-el.classList.add("active")
-
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
-document.getElementById(id).classList.add("active")
-
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+el.classList.add('active');
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
-
-function setSerialMode(mode){
-
-serialMode=mode
-
-document.getElementById("last").classList.remove("active")
-document.getElementById("first").classList.remove("active")
-
-document.getElementById(mode).classList.add("active")
-
-generar()
-
-}
-
-const empresa=document.getElementById("empresa")
-const tipo=document.getElementById("tipo")
-const area=document.getElementById("area")
-const serial=document.getElementById("serial")
-const preview=document.getElementById("preview")
-
 function generar(){
-
-let e=empresa.value
-let t=tipo.value
-let a=area.value
-let s=serial.value
-
-if(s.length>=4){
-
-if(serialMode==="last"){
-s=s.slice(-4)
-}else{
-s=s.slice(0,4)
+let s=document.getElementById('serial').value.trim().toUpperCase();
+if(s.length>=4)s=(serialMode==='last'?s.slice(-4):s.slice(0,4));
+document.getElementById('preview').innerText=[empresa.value,tipo.value,area.value,s].filter(Boolean).join('-');
 }
-
-s=s.toUpperCase()
-
+empresa.onchange=tipo.onchange=area.onchange=generar;
+serial.oninput=generar;
+function calc(){
+let t=[impacto,urgencia,riesgo,usuario].reduce((a,e)=>a+parseInt(e.value),0);
+document.getElementById('resultado').innerText=t>=17?'P1 - CRÍTICA':t>=13?'P2 - ALTA':t>=9?'P3 - MEDIA':'P4 - BAJA';
 }
-
-let nombre=[e,t,a,s].filter(Boolean).join("-")
-
-preview.innerText=nombre
-
-}
-
-empresa.onchange=generar
-tipo.onchange=generar
-area.onchange=generar
-serial.oninput=generar
-
-function copiarNombre(){
-
-let texto=preview.innerText
-navigator.clipboard.writeText(texto)
-
-alert("Nombre copiado: "+texto)
-
-}
-
-function descargarDiagnostico(){
-
-let equipo=document.getElementById("equipo").value
-
-if(!equipo){
-alert("Ingrese nombre del equipo")
-return
-}
-
-let contenido=
-
-"@echo off\n"+
-"set PC="+equipo+"\n\n"+
-"echo ===== DIAGNOSTICO REMOTO =====\n\n"+
-"psexec \\\\%PC% systeminfo\n"+
-"psexec \\\\%PC% tasklist\n"+
-"psexec \\\\%PC% ipconfig /all\n"+
-"pause\n"
-
-descargarArchivo(contenido,"diagnostico_"+equipo+".bat")
-
-}
-
-function descargarMonitorLocal(){
-
-let contenido=
-
-"@echo off\n"+
-":loop\n"+
-"cls\n"+
-"echo MONITOR SAFETICA LOCAL\n\n"+
-"tasklist | findstr /I STCService\n"+
-"tasklist | findstr /I STEventService\n"+
-"tasklist | findstr /I STContentService\n\n"+
-"timeout /t 5 >nul\n"+
-"goto loop\n"
-
-descargarArchivo(contenido,"monitor_safetica_local.bat")
-
-}
-
-function descargarMonitorRemoto(){
-
-let equipo=document.getElementById("equipo").value
-
-if(!equipo){
-alert("Ingrese nombre del equipo")
-return
-}
-
-let contenido=
-
-"@echo off\n"+
-"set PC="+equipo+"\n"+
-"psexec -accepteula >nul 2>&1\n\n"+
-":loop\n"+
-"cls\n"+
-"echo ==================================\n"+
-"echo MONITOR SAFETICA REMOTO\n"+
-"echo EQUIPO %PC%\n"+
-"echo ==================================\n\n"+
-"echo [PROCESOS SAFETICA]\n\n"+
-"psexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STCService.exe\" 2>nul\n"+
-"psexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STEventService.exe\" 2>nul\n"+
-"psexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STContentService.exe\" 2>nul\n\n"+
-"echo.\n"+
-"echo [SERVICIOS]\n\n"+
-"psexec \\\\%PC% -h -s sc query STCService | find \"STATE\"\n"+
-"psexec \\\\%PC% -h -s sc query STEventService | find \"STATE\"\n"+
-"psexec \\\\%PC% -h -s sc query STContentService | find \"STATE\"\n\n"+
-"echo.\n"+
-"echo [DRIVER DLP]\n\n"+
-"psexec \\\\%PC% -h -s driverquery | findstr /I dc2drv\n\n"+
-"timeout /t 5 >nul\n"+
-"goto loop\n"
-
-descargarArchivo(contenido,"monitor_safetica_remoto_"+equipo+".bat")
-
-}
-
-function descargarArchivo(contenido,nombre){
-
-let blob=new Blob([contenido],{type:"text/plain"})
-let link=document.createElement("a")
-
-link.href=URL.createObjectURL(blob)
-link.download=nombre
-link.click()
-
-}
-
 </script>
-
 </body>
-
 </html>
