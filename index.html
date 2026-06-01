@@ -1,84 +1,280 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Portal Herramientas TI</title>
+
 <style>
-body{background:#0f172a;color:#fff;font-family:Segoe UI;margin:0;padding:20px}
-.card{max-width:1100px;margin:auto;background:#020617;padding:20px;border-radius:12px}
-.tabs{display:flex;gap:8px;margin-bottom:15px}
-.tab{padding:10px 15px;border:1px solid #334155;border-radius:8px;cursor:pointer}
-.tab.active{background:#22c55e;color:#000;font-weight:bold}
-.section{display:none}.section.active{display:block}
-.preview{background:#000;color:#22c55e;padding:12px;border-radius:8px;margin-top:10px}
-label{display:block;margin-top:10px}
-input,select,button{width:100%;padding:10px;margin-top:5px;border-radius:8px}
-button{background:#22c55e;border:0;font-weight:bold}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f172a;font-family:Segoe UI,sans-serif;color:white;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
+.card{background:#020617;padding:30px;width:640px;border-radius:14px;box-shadow:0 0 30px rgba(0,0,0,.7);}
+h1{text-align:center;margin-bottom:20px;font-size:22px;}
+.tabs{display:flex;gap:8px;margin-bottom:20px;}
+.tab{flex:1;padding:10px;border-radius:8px;background:#020617;border:1px solid #334155;text-align:center;cursor:pointer;font-size:13px;transition:.2s;}
+.tab.active{background:#22c55e;color:black;font-weight:bold;}
+.section{display:none;}
+.section.active{display:block;}
+label{margin-top:10px;display:block;font-size:13px;}
+select,input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid #334155;background:#020617;color:white;font-size:13px;}
+.preview{margin-top:20px;padding:14px;background:black;color:#22c55e;font-family:Consolas;text-align:center;border-radius:8px;font-size:20px;}
+button{margin-top:12px;width:100%;padding:10px;border:none;border-radius:8px;background:#22c55e;font-weight:bold;cursor:pointer;color:black;font-size:14px;}
+button:hover{background:#16a34a;}
+.toggle-container{display:flex;gap:10px;margin-top:8px;}
+.toggle{flex:1;padding:10px;border-radius:8px;border:1px solid #334155;text-align:center;cursor:pointer;background:#020617;font-size:13px;}
+.toggle.active{background:#22c55e;color:black;font-weight:bold;}
+
+/* MATRIZ */
+.mat-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.mat-card{background:#0f172a;border-radius:10px;padding:16px;border:1px solid #334155;}
+.mat-card h3{font-size:13px;font-weight:500;margin-bottom:8px;color:#94a3b8;}
+.mat-card select{background:#020617;}
+.fecha-wrap{margin-top:8px;display:none;}
+.fecha-wrap label{font-size:12px;color:#64748b;margin-bottom:3px;}
+.resultado{border-radius:14px;padding:24px;text-align:center;transition:.4s;margin-bottom:16px;}
+.score{font-size:56px;font-weight:bold;}
+.priority{font-size:26px;font-weight:500;margin-top:6px;}
+.desc{margin-top:10px;font-size:14px;}
+.action-box{margin-top:12px;background:rgba(255,255,255,.15);padding:10px;border-radius:8px;font-size:13px;}
+.prog-note{margin-top:10px;background:rgba(255,255,255,.2);padding:8px 12px;border-radius:8px;font-size:13px;display:none;border-left:3px solid rgba(255,255,255,0.6);}
+.vip-alert{margin-top:10px;font-size:14px;font-weight:500;display:none;background:rgba(255,255,255,.2);padding:8px;border-radius:8px;}
+.p1{background:linear-gradient(135deg,#dc2626,#991b1b);}
+.p2{background:linear-gradient(135deg,#f59e0b,#d97706);}
+.p3{background:linear-gradient(135deg,#0284c7,#0369a1);}
+.p4{background:linear-gradient(135deg,#16a34a,#15803d);}
+.table-box{background:white;border-radius:12px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;color:#1e293b;}
+th{background:#0f172a;color:white;padding:10px;text-align:center;font-size:12px;font-weight:500;}
+td{padding:9px;text-align:center;border:1px solid #e2e8f0;font-size:12px;}
 </style>
-</head>
-<body>
+
 <div class="card">
-<h1>Portal Herramientas TI</h1>
+  <h1>Portal Herramientas TI</h1>
+  <div class="tabs">
+    <div class="tab active" onclick="tab('generador',this)">Generador Nombre</div>
+    <div class="tab" onclick="tab('diagnostico',this)">Diagnóstico</div>
+    <div class="tab" onclick="tab('matriz',this)">Priorización</div>
+  </div>
 
-<div class="tabs">
-<div class="tab active" onclick="tab('generador',this)">Generador</div>
-<div class="tab" onclick="tab('diagnostico',this)">Diagnóstico</div>
-<div class="tab" onclick="tab('priorizacion',this)">Priorización</div>
-</div>
+  <!-- GENERADOR -->
+  <div class="section active" id="generador">
+    <label>Empresa</label>
+    <select id="empresa">
+      <option value="">Seleccione</option>
+      <option value="FLA">GRUPO FLAMINGO</option>
+      <option value="COL">COLTEFINANCIERA</option>
+      <option value="CON">CONNSER</option>
+      <option value="NOV">NOVAFIANZA</option>
+      <option value="LNK">LINK SEGUROS</option>
+      <option value="LAT">LATAM</option>
+      <option value="FOR">FORJANDO</option>
+    </select>
+    <label>Área</label>
+    <select id="area">
+      <option value="">Seleccione</option>
+      <option value="PRE">Presidencia</option><option value="TI">Tecnología</option>
+      <option value="DES">Desarrollo</option><option value="INN">Innovación</option>
+      <option value="COM">Comercial</option><option value="VTA">Ventas</option>
+      <option value="MER">Mercadeo</option><option value="SAC">Servicio al Cliente</option>
+      <option value="OPS">Operaciones</option><option value="ADM">Administración</option>
+      <option value="FIN">Financiera</option><option value="CTB">Contabilidad</option>
+      <option value="AUD">Auditoría</option><option value="RIE">Riesgos</option>
+      <option value="CUM">Cumplimiento</option><option value="JUR">Jurídica</option>
+      <option value="PLA">Planeación</option><option value="GH">Gestión Humana</option>
+      <option value="CMP">Compras</option><option value="LOG">Logística</option>
+    </select>
+    <label>Tipo Equipo</label>
+    <select id="tipo">
+      <option value="">Seleccione</option>
+      <option value="LP">Laptop</option>
+      <option value="DT">Desktop</option>
+    </select>
+    <label>Serial</label>
+    <input id="serial" placeholder="Serial del equipo">
+    <label>Formato serial</label>
+    <div class="toggle-container">
+      <div class="toggle active" id="last" onclick="setSerialMode('last')">Últimos 4</div>
+      <div class="toggle" id="first" onclick="setSerialMode('first')">Primeros 4</div>
+    </div>
+    <div class="preview" id="preview">EMP-TIPO-AREA-XXXX</div>
+    <button onclick="copiarNombre()">Copiar nombre al portapapeles</button>
+  </div>
 
-<div id="generador" class="section active">
-<label>Empresa</label>
-<select id="empresa"><option>COL</option><option>CON</option></select>
-<label>Tipo</label>
-<select id="tipo"><option>LP</option><option>DT</option></select>
-<label>Área</label>
-<select id="area"><option>TI</option><option>SAC</option></select>
-<label>Serial</label>
-<input id="serial">
-<div style="display:flex;gap:8px;margin-top:10px">
-<button onclick="serialMode='last';generar()">Últimos 4</button>
-<button onclick="serialMode='first';generar()">Primeros 4</button>
-</div>
-<div id="preview" class="preview">COL-LP-TI-XXXX</div>
-</div>
+  <!-- DIAGNOSTICO -->
+  <div class="section" id="diagnostico">
+    <label>Nombre del equipo</label>
+    <input id="equipo" placeholder="Ej: COL-LP-TI-7F2A">
+    <button onclick="descargarDiagnostico()">Descargar Diagnóstico Remoto</button>
+    <button onclick="descargarMonitorLocal()">Monitor Safetica Local</button>
+    <button onclick="descargarMonitorRemoto()">Monitor Safetica Remoto</button>
+  </div>
 
-<div id="diagnostico" class="section">
-<p>Área de diagnóstico lista para ampliar.</p>
-</div>
+  <!-- MATRIZ -->
+  <div class="section" id="matriz">
+    <div class="mat-cards">
+      <div class="mat-card">
+        <h3>⚠️ Impacto</h3>
+        <select id="impacto" onchange="calcular()">
+          <option value="1">1 — Usuario individual</option>
+          <option value="2">2 — Grupo pequeño</option>
+          <option value="3">3 — Área completa</option>
+          <option value="4">4 — Varias áreas</option>
+          <option value="5">5 — Toda la compañía</option>
+        </select>
+      </div>
+      <div class="mat-card">
+        <h3>🔥 Urgencia</h3>
+        <select id="urgencia" onchange="calcular()">
+          <option value="1">1 — Programable</option>
+          <option value="2">2 — 24 horas</option>
+          <option value="3">3 — Durante el día</option>
+          <option value="4">4 — Menos de 1 hora</option>
+          <option value="5">5 — Inmediato</option>
+        </select>
+        <div class="fecha-wrap" id="fechaWrap">
+          <label>📅 Fecha programación</label>
+          <input type="date" id="fechaProg" onchange="calcular()">
+        </div>
+      </div>
+      <div class="mat-card">
+        <h3>🚨 Riesgo</h3>
+        <select id="riesgo" onchange="calcular()">
+          <option value="1">1 — Sin riesgo</option>
+          <option value="2">2 — Riesgo bajo</option>
+          <option value="3">3 — Riesgo medio</option>
+          <option value="4">4 — Riesgo alto</option>
+          <option value="5">5 — Riesgo financiero / regulatorio</option>
+        </select>
+      </div>
+      <div class="mat-card">
+        <h3>👤 Usuario afectado</h3>
+        <select id="usuario" onchange="calcular()">
+          <option value="1">Usuario operativo</option>
+          <option value="2">Coordinador</option>
+          <option value="3">Gerente</option>
+          <option value="4">Director</option>
+          <option value="5">⭐ VIP (VP / Presidencia)</option>
+        </select>
+      </div>
+    </div>
 
-<div id="priorizacion" class="section">
-<label>Impacto</label>
-<select id="impacto" onchange="calc()"><option value="1">1</option><option value="5">5</option></select>
-<label>Urgencia</label>
-<select id="urgencia" onchange="calc()"><option value="1">1</option><option value="5">5</option></select>
-<label>Riesgo</label>
-<select id="riesgo" onchange="calc()"><option value="1">1</option><option value="5">5</option></select>
-<label>Usuario</label>
-<select id="usuario" onchange="calc()"><option value="1">Operativo</option><option value="5">VIP</option></select>
-<div id="resultado" class="preview">P4 - BAJA</div>
-</div>
+    <div id="resultado" class="resultado p4">
+      <div class="score" id="puntaje">4</div>
+      <div class="priority" id="prioridad">🟢 P4 — BAJA</div>
+      <div class="desc" id="descripcion">Incidente programable sin impacto significativo.</div>
+      <div class="action-box" id="accion">Atención dentro de las actividades normales de operación.</div>
+      <div class="prog-note" id="progNote">📅 Programado para: <span id="fechaTexto">—</span></div>
+      <div class="vip-alert" id="vipAlert">⭐ Caso de alta visibilidad para la organización</div>
+    </div>
+
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr><th>Puntaje</th><th>Prioridad</th><th>SLA referencial</th><th>Acción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>17 – 20</td><td>🔴 P1 Crítica</td><td>Inmediato</td><td>Escalamiento ejecutivo</td></tr>
+          <tr><td>13 – 16</td><td>🟠 P2 Alta</td><td>4 horas</td><td>Atención prioritaria</td></tr>
+          <tr><td>9 – 12</td><td>🔵 P3 Media</td><td>8 horas</td><td>Atención durante jornada</td></tr>
+          <tr><td>4 – 8</td><td>🟢 P4 Baja</td><td>24 horas</td><td>Gestión programada</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script>
-let serialMode='last';
+let serialMode="last"
 function tab(id,el){
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-el.classList.add('active');
-document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
+  el.classList.add("active")
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
+  document.getElementById(id).classList.add("active")
+}
+function setSerialMode(mode){
+  serialMode=mode
+  document.getElementById("last").classList.toggle("active",mode==="last")
+  document.getElementById("first").classList.toggle("active",mode==="first")
+  generar()
 }
 function generar(){
-let s=document.getElementById('serial').value.trim().toUpperCase();
-if(s.length>=4)s=(serialMode==='last'?s.slice(-4):s.slice(0,4));
-document.getElementById('preview').innerText=[empresa.value,tipo.value,area.value,s].filter(Boolean).join('-');
+  let e=document.getElementById("empresa").value
+  let t=document.getElementById("tipo").value
+  let a=document.getElementById("area").value
+  let s=document.getElementById("serial").value
+  if(s.length>=4){
+    s=serialMode==="last"?s.slice(-4):s.slice(0,4)
+    s=s.toUpperCase()
+  }
+  document.getElementById("preview").innerText=[e,t,a,s].filter(Boolean).join("-")||"EMP-TIPO-AREA-XXXX"
 }
-empresa.onchange=tipo.onchange=area.onchange=generar;
-serial.oninput=generar;
-function calc(){
-let t=[impacto,urgencia,riesgo,usuario].reduce((a,e)=>a+parseInt(e.value),0);
-document.getElementById('resultado').innerText=t>=17?'P1 - CRÍTICA':t>=13?'P2 - ALTA':t>=9?'P3 - MEDIA':'P4 - BAJA';
+document.getElementById("empresa").onchange=generar
+document.getElementById("tipo").onchange=generar
+document.getElementById("area").onchange=generar
+document.getElementById("serial").oninput=generar
+
+function copiarNombre(){
+  let texto=document.getElementById("preview").innerText
+  navigator.clipboard.writeText(texto)
+  alert("Nombre copiado: "+texto)
 }
+function descargarDiagnostico(){
+  let equipo=document.getElementById("equipo").value
+  if(!equipo){alert("Ingrese nombre del equipo");return}
+  let c="@echo off\nset PC="+equipo+"\n\necho ===== DIAGNOSTICO REMOTO =====\n\npsexec \\\\%PC% systeminfo\npsexec \\\\%PC% tasklist\npsexec \\\\%PC% ipconfig /all\npause\n"
+  descargarArchivo(c,"diagnostico_"+equipo+".bat")
+}
+function descargarMonitorLocal(){
+  let c="@echo off\n:loop\ncls\necho MONITOR SAFETICA LOCAL\n\ntasklist | findstr /I STCService\ntasklist | findstr /I STEventService\ntasklist | findstr /I STContentService\n\ntimeout /t 5 >nul\ngoto loop\n"
+  descargarArchivo(c,"monitor_safetica_local.bat")
+}
+function descargarMonitorRemoto(){
+  let equipo=document.getElementById("equipo").value
+  if(!equipo){alert("Ingrese nombre del equipo");return}
+  let c="@echo off\nset PC="+equipo+"\npsexec -accepteula >nul 2>&1\n\n:loop\ncls\necho ==================================\necho MONITOR SAFETICA REMOTO\necho EQUIPO %PC%\necho ==================================\n\necho [PROCESOS SAFETICA]\n\npsexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STCService.exe\" 2>nul\npsexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STEventService.exe\" 2>nul\npsexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STContentService.exe\" 2>nul\n\necho.\necho [SERVICIOS]\n\npsexec \\\\%PC% -h -s sc query STCService | find \"STATE\"\npsexec \\\\%PC% -h -s sc query STEventService | find \"STATE\"\npsexec \\\\%PC% -h -s sc query STContentService | find \"STATE\"\n\necho.\necho [DRIVER DLP]\n\npsexec \\\\%PC% -h -s driverquery | findstr /I dc2drv\n\ntimeout /t 5 >nul\ngoto loop\n"
+  descargarArchivo(c,"monitor_safetica_remoto_"+equipo+".bat")
+}
+function descargarArchivo(contenido,nombre){
+  let blob=new Blob([contenido],{type:"text/plain"})
+  let link=document.createElement("a")
+  link.href=URL.createObjectURL(blob)
+  link.download=nombre
+  link.click()
+}
+
+function calcular(){
+  let impacto=parseInt(document.getElementById("impacto").value)
+  let urgencia=parseInt(document.getElementById("urgencia").value)
+  let riesgo=parseInt(document.getElementById("riesgo").value)
+  let usuario=parseInt(document.getElementById("usuario").value)
+  let total=impacto+urgencia+riesgo+usuario
+  let fechaWrap=document.getElementById("fechaWrap")
+  let progNote=document.getElementById("progNote")
+  let fechaTexto=document.getElementById("fechaTexto")
+  let fechaVal=document.getElementById("fechaProg").value
+  let esProg=(urgencia===1)
+  fechaWrap.style.display=esProg?"block":"none"
+  if(esProg&&fechaVal){
+    let d=new Date(fechaVal+"T00:00:00")
+    fechaTexto.textContent=d.toLocaleDateString("es-CO",{weekday:"long",year:"numeric",month:"long",day:"numeric"})
+    progNote.style.display="block"
+  }else{
+    progNote.style.display="none"
+    fechaTexto.textContent="—"
+  }
+  document.getElementById("puntaje").textContent=total
+  let res=document.getElementById("resultado")
+  let prio=document.getElementById("prioridad")
+  let desc=document.getElementById("descripcion")
+  let acc=document.getElementById("accion")
+  let vip=document.getElementById("vipAlert")
+  vip.style.display=(usuario===5)?"block":"none"
+  let escAuto=(usuario===5&&(impacto>=4||riesgo>=4||urgencia>=4))
+  if(escAuto){
+    res.className="resultado p1"
+    prio.textContent="🔴 P1 — CRÍTICA"
+    desc.textContent="Escalamiento automático por afectación a usuario VIP con alto impacto, riesgo o urgencia."
+    acc.textContent="Atención inmediata. Notificación a liderazgo tecnológico y seguimiento continuo."
+    return
+  }
+  if(total>=17){res.className="resultado p1";prio.textContent="🔴 P1 — CRÍTICA";desc.textContent="Impacto severo para la operación o continuidad del negocio.";acc.textContent="Atención inmediata, war room y seguimiento permanente."}
+  else if(total>=13){res.className="resultado p2";prio.textContent="🟠 P2 — ALTA";desc.textContent="Incidente importante con afectación relevante.";acc.textContent="Gestión prioritaria y monitoreo constante."}
+  else if(total>=9){res.className="resultado p3";prio.textContent="🔵 P3 — MEDIA";desc.textContent="Impacto moderado para usuarios o procesos.";acc.textContent="Atención dentro de la jornada operativa."}
+  else{res.className="resultado p4";prio.textContent="🟢 P4 — BAJA";desc.textContent="Incidente programable sin impacto significativo.";acc.textContent="Gestión programada según disponibilidad."}
+}
+calcular()
 </script>
-</body>
-</html>
