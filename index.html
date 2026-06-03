@@ -1,8 +1,13 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Herramientas TI</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#0f172a;font-family:Segoe UI,sans-serif;color:white;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:20px;}
-.card{background:#020617;padding:30px;width:640px;border-radius:14px;box-shadow:0 0 30px rgba(0,0,0,.7);}
+.card{background:#020617;padding:30px;width:680px;border-radius:14px;box-shadow:0 0 30px rgba(0,0,0,.7);}
 h1{text-align:center;margin-bottom:20px;font-size:22px;}
 .tabs{display:flex;gap:8px;margin-bottom:20px;}
 .tab{flex:1;padding:10px;border-radius:8px;background:#020617;border:1px solid #334155;text-align:center;cursor:pointer;font-size:13px;transition:.2s;}
@@ -18,30 +23,30 @@ button:hover{background:#16a34a;}
 .toggle{flex:1;padding:10px;border-radius:8px;border:1px solid #334155;text-align:center;cursor:pointer;background:#020617;font-size:13px;}
 .toggle.active{background:#22c55e;color:black;font-weight:bold;}
 
-/* MATRIZ */
-.mat-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+/* ── MATRIZ PUR v2.4 ── */
+.mat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
 .mat-card{background:#0f172a;border-radius:10px;padding:16px;border:1px solid #334155;}
 .mat-card h3{font-size:13px;font-weight:500;margin-bottom:8px;color:#94a3b8;}
-.mat-card select{background:#020617;}
-.fecha-wrap{margin-top:8px;display:none;}
-.fecha-wrap label{font-size:12px;color:#64748b;margin-bottom:3px;}
+.mat-card select,.mat-card input{background:#020617;}
+
 .resultado{border-radius:14px;padding:24px;text-align:center;transition:.4s;margin-bottom:16px;}
-.score{font-size:56px;font-weight:bold;}
-.priority{font-size:26px;font-weight:500;margin-top:6px;}
-.desc{margin-top:10px;font-size:14px;}
-.action-box{margin-top:12px;background:rgba(255,255,255,.15);padding:10px;border-radius:8px;font-size:13px;}
-.prog-note{margin-top:10px;background:rgba(255,255,255,.2);padding:8px 12px;border-radius:8px;font-size:13px;display:none;border-left:3px solid rgba(255,255,255,0.6);}
-.vip-alert{margin-top:10px;font-size:14px;font-weight:500;display:none;background:rgba(255,255,255,.2);padding:8px;border-radius:8px;}
+.score{font-size:64px;font-weight:bold;line-height:1;}
+.priority{font-size:26px;font-weight:600;margin-top:8px;}
+.reason{margin-top:10px;font-size:14px;opacity:.9;}
+.fecha-msg{margin-top:12px;font-size:14px;font-weight:500;background:rgba(255,255,255,.15);padding:10px 14px;border-radius:8px;display:block;}
+
 .p1{background:linear-gradient(135deg,#dc2626,#991b1b);}
 .p2{background:linear-gradient(135deg,#f59e0b,#d97706);}
 .p3{background:linear-gradient(135deg,#0284c7,#0369a1);}
 .p4{background:linear-gradient(135deg,#16a34a,#15803d);}
+
 .table-box{background:white;border-radius:12px;overflow:hidden;}
 table{width:100%;border-collapse:collapse;color:#1e293b;}
 th{background:#0f172a;color:white;padding:10px;text-align:center;font-size:12px;font-weight:500;}
 td{padding:9px;text-align:center;border:1px solid #e2e8f0;font-size:12px;}
 </style>
-
+</head>
+<body>
 <div class="card">
   <h1>Portal Herramientas TI</h1>
   <div class="tabs">
@@ -103,74 +108,68 @@ td{padding:9px;text-align:center;border:1px solid #e2e8f0;font-size:12px;}
     <button onclick="descargarMonitorRemoto()">Monitor Safetica Remoto</button>
   </div>
 
-  <!-- MATRIZ -->
+  <!-- MATRIZ PUR v2.4 -->
   <div class="section" id="matriz">
-    <div class="mat-cards">
+    <div class="mat-grid">
+      <div class="mat-card">
+        <h3>📋 Tipo</h3>
+        <select id="mTipo" onchange="calcular()">
+          <option value="incidente">🚨 Incidente</option>
+          <option value="requerimiento">📋 Requerimiento</option>
+        </select>
+      </div>
       <div class="mat-card">
         <h3>⚠️ Impacto</h3>
-        <select id="impacto" onchange="calcular()">
+        <select id="mImpacto" onchange="calcular()">
           <option value="1">1 — Usuario individual</option>
           <option value="2">2 — Grupo pequeño</option>
           <option value="3">3 — Área completa</option>
           <option value="4">4 — Varias áreas</option>
-          <option value="5">5 — Toda la compañía</option>
+          <option value="5">5 — Toda la organización</option>
         </select>
       </div>
       <div class="mat-card">
         <h3>🔥 Urgencia</h3>
-        <select id="urgencia" onchange="calcular()">
+        <select id="mUrgencia" onchange="calcular()">
           <option value="1">1 — Programable</option>
-          <option value="2">2 — 24 horas</option>
-          <option value="3">3 — Durante el día</option>
+          <option value="2" selected>2 — 24 horas</option>
+          <option value="3">3 — Mismo día</option>
           <option value="4">4 — Menos de 1 hora</option>
           <option value="5">5 — Inmediato</option>
-        </select>
-        <div class="fecha-wrap" id="fechaWrap">
-          <label>📅 Fecha programación</label>
-          <input type="date" id="fechaProg" onchange="calcular()">
-        </div>
-      </div>
-      <div class="mat-card">
-        <h3>🚨 Riesgo</h3>
-        <select id="riesgo" onchange="calcular()">
-          <option value="1">1 — Sin riesgo</option>
-          <option value="2">2 — Riesgo bajo</option>
-          <option value="3">3 — Riesgo medio</option>
-          <option value="4">4 — Riesgo alto</option>
-          <option value="5">5 — Riesgo financiero / regulatorio</option>
         </select>
       </div>
       <div class="mat-card">
         <h3>👤 Usuario afectado</h3>
-        <select id="usuario" onchange="calcular()">
+        <select id="mUsuario" onchange="calcular()">
+          <option value="0">Personal externo</option>
           <option value="1">Usuario operativo</option>
           <option value="2">Coordinador</option>
-          <option value="3">Gerente</option>
-          <option value="4">Director</option>
-          <option value="5">⭐ VIP (VP / Presidencia)</option>
+          <option value="5">⭐ VIP (Gerente / Director / Presidencia)</option>
         </select>
+      </div>
+      <div class="mat-card" style="grid-column:1/-1;">
+        <h3>📅 Fecha programada</h3>
+        <input type="date" id="mFecha" onchange="calcular()">
       </div>
     </div>
 
     <div id="resultado" class="resultado p4">
-      <div class="score" id="puntaje">4</div>
-      <div class="priority" id="prioridad">🟢 P4 — BAJA</div>
-      <div class="desc" id="descripcion">Incidente programable sin impacto significativo.</div>
-      <div class="action-box" id="accion">Atención dentro de las actividades normales de operación.</div>
-      <div class="prog-note" id="progNote">📅 Programado para: <span id="fechaTexto">—</span></div>
-      <div class="vip-alert" id="vipAlert">⭐ Caso de alta visibilidad para la organización</div>
+      <div class="score" id="puntaje">0</div>
+      <div class="priority" id="prioridad">🟢 P4</div>
+      <div class="reason" id="detalle"></div>
+      <div class="fecha-msg" id="fechaTexto">📅 Sin fecha programada</div>
     </div>
 
     <div class="table-box">
       <table>
         <thead>
-          <tr><th>Puntaje</th><th>Prioridad</th><th>SLA referencial</th><th>Acción</th></tr>
+          <tr><th>Puntaje</th><th>Prioridad</th><th>SLA referencial</th></tr>
         </thead>
         <tbody>
-          <tr><td>17 – 20</td><td>🔴 P1 Crítica</td><td>Inmediato</td><td>Escalamiento ejecutivo</td></tr>
-          <tr><td>13 – 16</td><td>🟠 P2 Alta</td><td>4 horas</td><td>Atención prioritaria</td></tr>
-          <tr><td>9 – 12</td><td>🔵 P3 Media</td><td>8 horas</td><td>Atención durante jornada</td></tr>
-          <tr><td>4 – 8</td><td>🟢 P4 Baja</td><td>24 horas</td><td>Gestión programada</td></tr>
+          <tr><td>16 +</td><td>🔴 P1 Crítica</td><td>Inmediato</td></tr>
+          <tr><td>12 – 15</td><td>🟠 P2 Alta</td><td>4 horas</td></tr>
+          <tr><td>8 – 11</td><td>🔵 P3 Media</td><td>8 horas</td></tr>
+          <tr><td>0 – 7</td><td>🟢 P4 Baja</td><td>Programado</td></tr>
         </tbody>
       </table>
     </div>
@@ -178,6 +177,7 @@ td{padding:9px;text-align:center;border:1px solid #e2e8f0;font-size:12px;}
 </div>
 
 <script>
+/* ── TABS ── */
 let serialMode="last"
 function tab(id,el){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
@@ -185,6 +185,8 @@ function tab(id,el){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
   document.getElementById(id).classList.add("active")
 }
+
+/* ── GENERADOR ── */
 function setSerialMode(mode){
   serialMode=mode
   document.getElementById("last").classList.toggle("active",mode==="last")
@@ -212,6 +214,8 @@ function copiarNombre(){
   navigator.clipboard.writeText(texto)
   alert("Nombre copiado: "+texto)
 }
+
+/* ── DIAGNÓSTICO ── */
 function descargarDiagnostico(){
   let equipo=document.getElementById("equipo").value
   if(!equipo){alert("Ingrese nombre del equipo");return}
@@ -236,45 +240,70 @@ function descargarArchivo(contenido,nombre){
   link.click()
 }
 
+/* ── MATRIZ PUR v2.4 ── */
 function calcular(){
-  let impacto=parseInt(document.getElementById("impacto").value)
-  let urgencia=parseInt(document.getElementById("urgencia").value)
-  let riesgo=parseInt(document.getElementById("riesgo").value)
-  let usuario=parseInt(document.getElementById("usuario").value)
-  let total=impacto+urgencia+riesgo+usuario
-  let fechaWrap=document.getElementById("fechaWrap")
-  let progNote=document.getElementById("progNote")
-  let fechaTexto=document.getElementById("fechaTexto")
-  let fechaVal=document.getElementById("fechaProg").value
-  let esProg=(urgencia===1)
-  fechaWrap.style.display=esProg?"block":"none"
-  if(esProg&&fechaVal){
-    let d=new Date(fechaVal+"T00:00:00")
-    fechaTexto.textContent=d.toLocaleDateString("es-CO",{weekday:"long",year:"numeric",month:"long",day:"numeric"})
-    progNote.style.display="block"
+  let tipo=document.getElementById("mTipo").value
+  let impacto=parseInt(document.getElementById("mImpacto").value)
+  let urgencia=parseInt(document.getElementById("mUrgencia").value)
+  let usuario=parseInt(document.getElementById("mUsuario").value)
+  let fecha=document.getElementById("mFecha").value
+
+  let total=0
+  let detalle=""
+
+  // Fecha siempre visible
+  if(fecha){
+    let p=fecha.split("-")
+    document.getElementById("fechaTexto").innerHTML="📅 Fecha programada: "+p[2]+"/"+p[1]+"/"+p[0]
   }else{
-    progNote.style.display="none"
-    fechaTexto.textContent="—"
+    document.getElementById("fechaTexto").innerHTML="📅 Sin fecha programada"
   }
+
+  if(tipo==="incidente"){
+    total=(impacto*2)+urgencia+usuario+2
+    detalle="🚨 Incidente: impacto con peso doble."
+    if(urgencia>=4&&impacto>=4){
+      total=20
+      detalle="🔥 Incidente crítico por alto impacto y urgencia."
+    }
+  }else{
+    let valorFecha=1
+    if(fecha){
+      let hoy=new Date(); hoy.setHours(0,0,0,0)
+      let f=new Date(fecha+"T00:00:00")
+      let dias=Math.ceil((f-hoy)/(1000*60*60*24))
+      if(dias<=0){valorFecha=5}
+      else if(dias<=2){valorFecha=4}
+      else if(dias<=5){valorFecha=3}
+      else if(dias<=10){valorFecha=2}
+      detalle="📋 Requerimiento priorizado por fecha compromiso."
+    }
+    total=impacto+usuario+valorFecha
+  }
+
+  // Lógica VIP
+  if(usuario===5){
+    if(urgencia>=4||impacto>=4){
+      total=20
+      detalle="⭐ VIP crítico por impacto o urgencia."
+    }else{
+      if(total<12){total=12}
+      detalle="⭐ VIP con prioridad alta automática."
+    }
+  }
+
+  let prioridad="🟢 P4 — BAJA"
+  let clase="resultado p4"
+  if(total>=16){prioridad="🔴 P1 — CRÍTICA";clase="resultado p1"}
+  else if(total>=12){prioridad="🟠 P2 — ALTA";clase="resultado p2"}
+  else if(total>=8){prioridad="🔵 P3 — MEDIA";clase="resultado p3"}
+
   document.getElementById("puntaje").textContent=total
-  let res=document.getElementById("resultado")
-  let prio=document.getElementById("prioridad")
-  let desc=document.getElementById("descripcion")
-  let acc=document.getElementById("accion")
-  let vip=document.getElementById("vipAlert")
-  vip.style.display=(usuario===5)?"block":"none"
-  let escAuto=(usuario===5&&(impacto>=4||riesgo>=4||urgencia>=4))
-  if(escAuto){
-    res.className="resultado p1"
-    prio.textContent="🔴 P1 — CRÍTICA"
-    desc.textContent="Escalamiento automático por afectación a usuario VIP con alto impacto, riesgo o urgencia."
-    acc.textContent="Atención inmediata. Notificación a liderazgo tecnológico y seguimiento continuo."
-    return
-  }
-  if(total>=17){res.className="resultado p1";prio.textContent="🔴 P1 — CRÍTICA";desc.textContent="Impacto severo para la operación o continuidad del negocio.";acc.textContent="Atención inmediata, war room y seguimiento permanente."}
-  else if(total>=13){res.className="resultado p2";prio.textContent="🟠 P2 — ALTA";desc.textContent="Incidente importante con afectación relevante.";acc.textContent="Gestión prioritaria y monitoreo constante."}
-  else if(total>=9){res.className="resultado p3";prio.textContent="🔵 P3 — MEDIA";desc.textContent="Impacto moderado para usuarios o procesos.";acc.textContent="Atención dentro de la jornada operativa."}
-  else{res.className="resultado p4";prio.textContent="🟢 P4 — BAJA";desc.textContent="Incidente programable sin impacto significativo.";acc.textContent="Gestión programada según disponibilidad."}
+  document.getElementById("prioridad").textContent=prioridad
+  document.getElementById("detalle").textContent=detalle
+  document.getElementById("resultado").className=clase
 }
 calcular()
 </script>
+</body>
+</html>
