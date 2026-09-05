@@ -19,6 +19,15 @@ select,input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px
 .preview{margin-top:20px;padding:14px;background:black;color:#22c55e;font-family:Consolas;text-align:center;border-radius:8px;font-size:20px;}
 button{margin-top:12px;width:100%;padding:10px;border:none;border-radius:8px;background:#22c55e;font-weight:bold;cursor:pointer;color:black;font-size:14px;}
 button:hover{background:#16a34a;}
+.download-card{margin-bottom:18px;padding:18px;background:linear-gradient(135deg,#0f172a,#111c33);border:1px solid #334155;border-radius:12px;}
+.download-card h2{font-size:17px;margin-bottom:7px;}
+.download-card p{color:#cbd5e1;font-size:14px;line-height:1.5;}
+.download-meta{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0;}
+.download-meta span{padding:5px 9px;border-radius:999px;background:#1e293b;color:#dbeafe;font-size:12px;border:1px solid #334155;}
+.download-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:12px;border-radius:8px;background:#22c55e;color:#052e16;text-decoration:none;font-weight:700;font-size:14px;transition:.2s;}
+.download-btn:hover{background:#16a34a;color:#fff;}
+.download-help{margin-top:11px!important;color:#94a3b8!important;font-size:12px!important;}
+.download-btn:focus-visible,button:focus-visible,.tab:focus-visible{outline:3px solid #86efac;outline-offset:3px;}
 .toggle-container{display:flex;gap:10px;margin-top:8px;}
 .toggle{flex:1;padding:10px;border-radius:8px;border:1px solid #334155;text-align:center;cursor:pointer;background:#020617;font-size:13px;}
 .toggle.active{background:#22c55e;color:black;font-weight:bold;}
@@ -101,6 +110,18 @@ td{padding:9px;text-align:center;border:1px solid #e2e8f0;font-size:12px;}
 
   <!-- DIAGNOSTICO -->
   <div class="section" id="diagnostico">
+    <div class="download-card">
+      <h2>Validación técnica de equipos</h2>
+      <p>Descarga el sistema completo para ejecutar diagnósticos locales, remotos o masivos y generar los informes HTML de certificación.</p>
+      <div class="download-meta" aria-label="Contenido del paquete">
+        <span>Checker N1 v19.1</span>
+        <span>PsExec incluido</span>
+        <span>32 controles</span>
+        <span>Modo masivo</span>
+      </div>
+      <a class="download-btn" href="./Validacion-de-Equipos.zip" download="Validacion-de-Equipos.zip">⬇ Descargar sistema completo (.zip)</a>
+      <p class="download-help">Descomprime el archivo y ejecuta <strong>Ejecutar-Checker.cmd</strong> como administrador. No ejecutes el programa directamente dentro del ZIP.</p>
+    </div>
     <label>Nombre del equipo</label>
     <input id="equipo" placeholder="Ej: COL-LP-TI-7F2A">
     <button onclick="descargarDiagnostico()">Descargar Diagnóstico Remoto</button>
@@ -216,9 +237,18 @@ function copiarNombre(){
 }
 
 /* ── DIAGNÓSTICO ── */
+function obtenerEquipoSeguro(){
+  const equipo=document.getElementById("equipo").value.trim()
+  if(!equipo){alert("Ingrese nombre del equipo");return null}
+  if(!/^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$/.test(equipo)){
+    alert("Use solamente letras, números, puntos y guiones en el nombre del equipo")
+    return null
+  }
+  return equipo
+}
 function descargarDiagnostico(){
-  let equipo=document.getElementById("equipo").value
-  if(!equipo){alert("Ingrese nombre del equipo");return}
+  let equipo=obtenerEquipoSeguro()
+  if(!equipo)return
   let c="@echo off\nset PC="+equipo+"\n\necho ===== DIAGNOSTICO REMOTO =====\n\npsexec \\\\%PC% systeminfo\npsexec \\\\%PC% tasklist\npsexec \\\\%PC% ipconfig /all\npause\n"
   descargarArchivo(c,"diagnostico_"+equipo+".bat")
 }
@@ -227,8 +257,8 @@ function descargarMonitorLocal(){
   descargarArchivo(c,"monitor_safetica_local.bat")
 }
 function descargarMonitorRemoto(){
-  let equipo=document.getElementById("equipo").value
-  if(!equipo){alert("Ingrese nombre del equipo");return}
+  let equipo=obtenerEquipoSeguro()
+  if(!equipo)return
   let c="@echo off\nset PC="+equipo+"\npsexec -accepteula >nul 2>&1\n\n:loop\ncls\necho ==================================\necho MONITOR SAFETICA REMOTO\necho EQUIPO %PC%\necho ==================================\n\necho [PROCESOS SAFETICA]\n\npsexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STCService.exe\" 2>nul\npsexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STEventService.exe\" 2>nul\npsexec \\\\%PC% -h -s tasklist /FI \"IMAGENAME eq STContentService.exe\" 2>nul\n\necho.\necho [SERVICIOS]\n\npsexec \\\\%PC% -h -s sc query STCService | find \"STATE\"\npsexec \\\\%PC% -h -s sc query STEventService | find \"STATE\"\npsexec \\\\%PC% -h -s sc query STContentService | find \"STATE\"\n\necho.\necho [DRIVER DLP]\n\npsexec \\\\%PC% -h -s driverquery | findstr /I dc2drv\n\ntimeout /t 5 >nul\ngoto loop\n"
   descargarArchivo(c,"monitor_safetica_remoto_"+equipo+".bat")
 }
@@ -238,6 +268,7 @@ function descargarArchivo(contenido,nombre){
   link.href=URL.createObjectURL(blob)
   link.download=nombre
   link.click()
+  URL.revokeObjectURL(link.href)
 }
 
 /* ── MATRIZ PUR v2.4 ── */
